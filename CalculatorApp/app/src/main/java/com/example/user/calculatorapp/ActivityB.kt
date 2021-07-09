@@ -37,9 +37,9 @@ class ActivityB : AppCompatActivity() {
                 Toast.makeText(this,"Enter Value 2", Toast.LENGTH_SHORT).show()
             }
             else
-                performOperation(value1.text.toString().toFloat(),value2.text.toString().toFloat(), operationType) }
+                performOperation(value1.text.toString().toDouble(),value2.text.toString().toDouble(), operationType) }
     }
-    private fun performOperation(value1 : Float, value2 : Float, type : OperationType){
+    private fun performOperation(value1 : Double, value2 : Double, type : OperationType){
         when(type){
             OperationType.ADD ->{
                 returnValuesBackToCallingActivity(value1,value2,value1+value2,type)
@@ -54,7 +54,7 @@ class ActivityB : AppCompatActivity() {
 
             }
             OperationType.DIVISION ->{
-                if(value2 == 0f){
+                if(value2 == 0.0){
                     Toast.makeText(this,"Enter Non Zero Value for Value 2 ", Toast.LENGTH_SHORT).show()
                 }
                 else
@@ -63,7 +63,7 @@ class ActivityB : AppCompatActivity() {
             }
         }
     }
-    private fun returnValuesBackToCallingActivity(value1 : Float, value2 : Float,answer : Float, type : OperationType){
+    private fun returnValuesBackToCallingActivity(value1 : Double, value2 : Double,answer : Double, type : OperationType){
         val resultIntent = Intent(this, ActivityA::class.java)
         resultIntent.putExtra("value1",value1)
         resultIntent.putExtra("value2",value2)

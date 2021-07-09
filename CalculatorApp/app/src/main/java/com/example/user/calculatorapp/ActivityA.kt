@@ -9,7 +9,7 @@ import android.widget.*
 import com.example.user.calculatorapp.enums.OperationType
 
 class ActivityA : AppCompatActivity() {
-    private val REQUEST_CODE_FOR_ACTIVTY2 = 1
+    private val REQUEST_CODE_FOR_ACTIVTY_B = 1
 
     lateinit var resultView : RelativeLayout
     lateinit var operationButtonView : LinearLayout
@@ -42,7 +42,7 @@ class ActivityA : AppCompatActivity() {
         val intent : Intent = Intent(this,ActivityB::class.java)
         intent.putExtra("operation",operationType.ordinal)
         //startActivity(intent)
-        startActivityForResult(intent,REQUEST_CODE_FOR_ACTIVTY2)
+        startActivityForResult(intent,REQUEST_CODE_FOR_ACTIVTY_B)
 
     }
     private fun resetViews(){
@@ -53,13 +53,13 @@ class ActivityA : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQUEST_CODE_FOR_ACTIVTY2){
+        if(requestCode == REQUEST_CODE_FOR_ACTIVTY_B){
             if(resultCode == RESULT_OK && data != null){
                 operationButtonView.visibility = View.INVISIBLE
                // Toast.makeText(this,"contxt back to act 1", Toast.LENGTH_SHORT).show()
-                var value1 = data?.getFloatExtra("value1",0f)
-                var value2 = data?.getFloatExtra("value2",0f)
-                var answer = data?.getFloatExtra("answer",0f)
+                var value1 = data?.getDoubleExtra("value1",0.0)
+                var value2 = data?.getDoubleExtra("value2",0.0)
+                var answer = data?.getDoubleExtra("answer",0.0)
                 var type = OperationType.values().get(data?.getIntExtra("operation-type",-1))
                 val resultText = "Your Result is "+answer+" for inputs "+value1+" and "+value2+" with Action "+type.toString()
                 resultTextView.text = resultText
