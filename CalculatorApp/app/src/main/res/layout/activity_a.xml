@@ -11,40 +11,49 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:layout_centerVertical="true"
+
+        android:layout_centerInParent="true"
 
         android:id="@+id/result_view"
 
-        android:gravity="center_horizontal|center_vertical">
+        >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/result_text_view"
-            android:text="Result"
+            android:text="Result "
             android:padding="8dp"
-            android:textSize="16sp"
+            android:textSize="22sp"
+            android:layout_marginTop="20dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
             android:textColor="@color/colorBlack"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:id="@+id/btn_reset"
+
+            android:background="@drawable/rounded_button"
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold"
+            android:layout_alignTop="@+id/result_text_view"
+
+            android:layout_marginTop="190dp"
+            android:layout_centerHorizontal="true"
+            android:textSize="18sp"
+            android:padding="8dp"
+
+
+            android:text="Reset" />
 
 
 
     </RelativeLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_reset"
 
 
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        android:textColor="@color/colorWhite"
-        android:textStyle="bold"
 
-
-        android:padding="8dp"
-        android:layout_margin="4dp"
-        android:text="Reset" />
 
 
 
@@ -52,61 +61,87 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
         android:id="@+id/operation_btn_view"
-        android:orientation="horizontal"
+        android:orientation="vertical"
+        android:layout_margin="8dp"
+
         >
-
-        <Button
-            android:id="@+id/add_operation_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_margin="4dp"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/colorWhite"
-            android:textStyle="bold"
+            android:orientation="horizontal"
+            android:layout_marginBottom="25dp"
+
+            >
+            <Button
+                android:id="@+id/add_operation_button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="60dp"
+                android:padding="8dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_button"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold"
 
 
-            android:text="Add" />
+                android:textSize="18sp"
+                android:text="Add" />
 
-        <Button
-            android:id="@+id/sub_operation_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            <Button
+                android:id="@+id/sub_operation_button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="60dp"
+                android:padding="8dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_button"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:text="Subtract" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_margin="4dp"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/colorWhite"
-            android:textStyle="bold"
-            android:text="Subtract" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="25dp">
+            <Button
+                android:id="@+id/mul_operation_button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="60dp"
+                android:padding="8dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_button"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:text="Multiply" />
 
-        <Button
-            android:id="@+id/mul_operation_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_margin="4dp"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/colorWhite"
-            android:textStyle="bold"
-            android:text="Multiply" />
+            <Button
+                android:id="@+id/division_operation_button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="60dp"
+                android:padding="8dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_button"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:text="Division" />
 
-        <Button
-            android:id="@+id/division_operation_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_margin="4dp"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/colorWhite"
-            android:textStyle="bold"
-            android:text="Division" />
+
+        </LinearLayout>
+
+
+
+
     </LinearLayout>
 
 

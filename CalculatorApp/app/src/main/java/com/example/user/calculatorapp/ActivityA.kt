@@ -61,7 +61,8 @@ class ActivityA : AppCompatActivity() {
                 var value2 = data?.getDoubleExtra("value2",0.0)
                 var answer = data?.getDoubleExtra("answer",0.0)
                 var type = OperationType.values().get(data?.getIntExtra("operation-type",-1))
-                val resultText = "Your Result is "+answer+" for inputs "+value1+" and "+value2+" with Action "+type.toString()
+                val resultText = "Action  : "+type.toString()+"\nInput 1 : "+value1+"\nInput 2 : "+value2+"\nResult  : "+answer
+
                 resultTextView.text = resultText
                 resetButton.visibility = View.VISIBLE
                 resultView.visibility = View.VISIBLE
