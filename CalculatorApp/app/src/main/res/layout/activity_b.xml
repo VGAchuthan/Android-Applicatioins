@@ -60,19 +60,18 @@
             android:id="@+id/btn_perform"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
-            android:layout_below="@+id/edittext_value1"
+            android:layout_below="@+id/edittext_value2"
+            style="@style/PrimaryButton"
             android:layout_centerHorizontal="true"
 
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="90dp"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
 
             android:background="@drawable/rounded_button"
             android:padding="8dp"
             android:text="Perform"
-            android:textColor="@color/colorWhite"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+             />
 
 
 
