@@ -11,26 +11,28 @@ import android.widget.*
 import com.example.user.calculatorapp.enums.OperationType
 
 class ActivityA : AppCompatActivity() {
-    companion object {
+    /*companion object {
         //0 -> For Operation button view
         // 1 -> For Result View
         var VIEW_MODE : Int = 0
         var RESULT_STRING : String = ""
-    }
+    }*/
     private val REQUEST_CODE_FOR_ACTIVTY_B = 1
 
-    lateinit var resultView : RelativeLayout
-    lateinit var operationButtonView : LinearLayout
-    lateinit var resultTextView : TextView
-    lateinit var resetButton : Button
-    var view_mode: Int = 0
-    var result_string : String =""
+    lateinit private var resultView : GridLayout
+    lateinit private var operationButtonView : GridLayout
+    lateinit private var resultTextView : TextView
+    lateinit private var resetButton : Button
+    //0 -> For Operation button view
+    // 1 -> For Result View
+    private var view_mode: Int = 0
+    private var result_string : String =""
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putInt("viewMode",ActivityA.VIEW_MODE)
-        outState?.putString("result",ActivityA.RESULT_STRING)
-        //outState?.putInt("viewMode",view_mode)
-        //outState?.putString("result",result_string)
+        //outState?.putInt("viewMode",ActivityA.VIEW_MODE)
+        //outState?.putString("result",ActivityA.RESULT_STRING)
+        outState?.putInt("viewMode",view_mode)
+        outState?.putString("result",result_string)
 
         Log.i("ON SAVE INSTOACE","on save instance state")
         //println(result_string)
@@ -53,8 +55,8 @@ class ActivityA : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_a)
-        resultView = findViewById<RelativeLayout>(R.id.result_view)
-        operationButtonView = findViewById<LinearLayout>(R.id.operation_btn_view)
+        resultView = findViewById<GridLayout>(R.id.result_view)
+        operationButtonView = findViewById<GridLayout>(R.id.operation_btn_view)
         val addButton = findViewById<Button>(R.id.add_operation_button)
         val subButton = findViewById<Button>(R.id.sub_operation_button)
         val mulButton = findViewById<Button>(R.id.mul_operation_button)
@@ -64,19 +66,21 @@ class ActivityA : AppCompatActivity() {
         resultTextView = findViewById(R.id.result_text_view)
         if(savedInstanceState == null){
             Log.w("warn","bundel is null")
-             ActivityA.VIEW_MODE = 0
-            //view_mode = 0
+            // ActivityA.VIEW_MODE = 0
+            view_mode = 0
 
 
         }
         else{
             Log.w("WARN","bundle is not null")
             println(savedInstanceState?.getString("result"))
-            resultTextView.text = savedInstanceState?.getString("result")
-            //view_mode = 1
-            ActivityA.VIEW_MODE = savedInstanceState?.getInt("viewMode")!!.toInt()
+            result_string = savedInstanceState?.getString("result")
+            resultTextView.text =result_string// savedInstanceState?.getString("result")
+            view_mode = savedInstanceState?.getInt("viewMode")!!.toInt()
+            //ActivityA.VIEW_MODE = savedInstanceState?.getInt("viewMode")!!.toInt()
         }
-        setViewVisiblity(ActivityA.VIEW_MODE)
+        setViewVisiblity(view_mode)
+        //setViewVisiblity(ActivityA.VIEW_MODE)
 
 
         //resultView.visibility = View.INVISIBLE
@@ -86,10 +90,10 @@ class ActivityA : AppCompatActivity() {
         mulButton.setOnClickListener { callActivityWith(OperationType.MULTIPLY) }
         divButton.setOnClickListener { callActivityWith(OperationType.DIVISION) }
         resetButton.setOnClickListener {
-           ActivityA.VIEW_MODE = 0
-           // view_mode=0
-            //setViewVisiblity(view_mode)
-           setViewVisiblity(ActivityA.VIEW_MODE)
+           //ActivityA.VIEW_MODE = 0
+            view_mode=0
+           setViewVisiblity(view_mode)
+           //setViewVisiblity(ActivityA.VIEW_MODE)
         }
     }
     private fun callActivityWith(operationType : OperationType){
@@ -120,23 +124,23 @@ class ActivityA : AppCompatActivity() {
         if(requestCode == REQUEST_CODE_FOR_ACTIVTY_B){
             if(resultCode == RESULT_OK && data != null){
                // operationButtonView.visibility = View.INVISIBLE
-                ActivityA.VIEW_MODE = 1
-                //view_mode = 1
+               // ActivityA.VIEW_MODE = 1
+                view_mode = 1
                // Toast.makeText(this,"contxt back to act 1", Toast.LENGTH_SHORT).show()
                 var value1 = data?.getDoubleExtra("value1",0.0)
                 var value2 = data?.getDoubleExtra("value2",0.0)
                 var answer = data?.getDoubleExtra("answer",0.0)
                 var type = OperationType.values().get(data?.getIntExtra("operation-type",-1))
                 val resultText = "Action  : "+type.toString()+"\nInput 1 : "+value1+"\nInput 2 : "+value2+"\nResult  : "+answer
-                ActivityA.RESULT_STRING = resultText
-                //result_string = resultText
+                //ActivityA.RESULT_STRING = resultText
+                result_string = resultText
 
-                //resultTextView.text = result_string
-                resultTextView.text = ActivityA.RESULT_STRING
+                resultTextView.text = result_string
+                //resultTextView.text = ActivityA.RESULT_STRING
                // resetButton.visibility = View.VISIBLE
                 //resultView.visibility = View.VISIBLE
-                setViewVisiblity(ActivityA.VIEW_MODE)
-                //setViewVisiblity(view_mode)
+               // setViewVisiblity(ActivityA.VIEW_MODE)
+                setViewVisiblity(view_mode)
 
             }
         }

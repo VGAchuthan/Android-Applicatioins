@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context="com.example.user.calculatorapp.ActivityB">
 
-    <RelativeLayout
+    <GridLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_centerInParent="true"
-        android:orientation="vertical">
-
-
+        android:layout_gravity="center"
+        android:rowCount="3"
+        android:columnCount="1">
         <EditText
             android:layout_width="wrap_content"
             android:minWidth="250dp"
             android:maxWidth="400dp"
-            android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
             android:hint="Enter Value 1"
             android:textSize="18sp"
@@ -26,12 +25,10 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
+            android:layout_gravity="center"
 
             android:inputType="numberDecimal"
             android:id="@+id/edittext_value1"
-
-
-
             android:textColor="@color/colorBlack"
             />
 
@@ -42,17 +39,15 @@
             android:layout_width="wrap_content"
             android:minWidth="250dp"
             android:maxWidth="400dp"
-            android:layout_centerHorizontal="true"
+
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
             android:hint="Enter Value 2"
-            android:layout_alignTop="@+id/edittext_value1"
+            android:layout_gravity="center"
             android:padding="8dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="20dp"
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
-
-
             android:textColor="@color/colorBlack"
             android:textSize="18sp" />
 
@@ -60,21 +55,19 @@
             android:id="@+id/btn_perform"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
-            android:layout_below="@+id/edittext_value2"
-            style="@style/PrimaryButton"
-            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
 
-            android:layout_gravity="center_horizontal"
+            style="@style/PrimaryButton"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
 
             android:background="@drawable/rounded_button"
             android:padding="8dp"
             android:text="Perform"
-             />
+            />
 
 
 
-    </RelativeLayout>
+    </GridLayout>
 
-</RelativeLayout>
+</LinearLayout>
