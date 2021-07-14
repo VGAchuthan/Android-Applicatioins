@@ -19,8 +19,8 @@ class ActivityA : AppCompatActivity() {
     }*/
     private val REQUEST_CODE_FOR_ACTIVTY_B = 1
 
-    lateinit private var resultView : GridLayout
-    lateinit private var operationButtonView : GridLayout
+    lateinit private var resultView : LinearLayout
+    lateinit private var operationButtonView : LinearLayout
     lateinit private var resultTextView : TextView
     lateinit private var resetButton : Button
     //0 -> For Operation button view
@@ -55,8 +55,8 @@ class ActivityA : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_a)
-        resultView = findViewById<GridLayout>(R.id.result_view)
-        operationButtonView = findViewById<GridLayout>(R.id.operation_btn_view)
+        resultView = findViewById<LinearLayout>(R.id.result_view)
+        operationButtonView = findViewById<LinearLayout>(R.id.operation_btn_view)
         val addButton = findViewById<Button>(R.id.add_operation_button)
         val subButton = findViewById<Button>(R.id.sub_operation_button)
         val mulButton = findViewById<Button>(R.id.mul_operation_button)
