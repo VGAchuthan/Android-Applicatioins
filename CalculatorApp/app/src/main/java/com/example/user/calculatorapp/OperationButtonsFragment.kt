@@ -41,8 +41,8 @@ class OperationButtonsFragment() : Fragment() {
     override fun onSaveInstanceState(outState: Bundle?) {
         //outState?.putInt("viewMode",ActivityA.VIEW_MODE)
         //outState?.putString("result",ActivityA.RESULT_STRING)
-        outState?.putInt("viewMode",view_mode)
-        outState?.putString("result",result_string)
+       // outState?.putInt("viewMode",view_mode)
+        //outState?.putString("result",result_string)
 
        // Log.i("ON SAVE INSTOACE  ","on save instance state OPERATION BUTTONS")
         //println(result_string)
@@ -77,43 +77,31 @@ class OperationButtonsFragment() : Fragment() {
         val mulButton = (mul_operation_button)as Button
         val divButton = (division_operation_button)as Button
         resetButton = (btn_reset) as Button
-        var activityViewMode = (activity as ActivityA).getViewMode()
-        //setViewVisiblity(ActivityA.VIEW_MODE)
         resultTextView = (result_text_view) as  TextView
-        if(savedInstanceState == null){
-            Log.w("warn","bundel is null")
-            // ActivityA.VIEW_MODE = 0
-            view_mode = when(activityViewMode){
-                0,1->0
-                else-> 1
-                            }
-            result_string = getResultFromActivity()
-
-
+        result_string = getResultFromActivity()
+        if(!result_string.isEmpty()){
+           // Log.e("TAG","result string is null")
+            this.view_mode = 1
         }
-        else{
-            //Log.w("WARN","bundle is not null")
-            //println(savedInstanceState?.getString("result"))
-            result_string = savedInstanceState?.getString("result")
-            result_text_view.text =result_string// savedInstanceState?.getString("result")
-            view_mode = savedInstanceState?.getInt("viewMode")!!.toInt()
-            //ActivityA.VIEW_MODE = savedInstanceState?.getInt("viewMode")!!.toInt()
-        }
+        else
+            this.view_mode = 0
         setViewVisiblity(view_mode)
         addButton.setOnClickListener { callActivityWith(OperationType.ADD) }
         subButton.setOnClickListener { callActivityWith(OperationType.SUB) }
         mulButton.setOnClickListener { callActivityWith(OperationType.MULTIPLY) }
         divButton.setOnClickListener { callActivityWith(OperationType.DIVISION) }
         resetButton.setOnClickListener {
-            //ActivityA.VIEW_MODE = 0
-            view_mode=0
+
+            this.view_mode = 0
             setViewVisiblity(view_mode)
-            (activity as ActivityA).setViewMode(0)
-            onDestroyView()
+            (activity as ActivityA).setResultString("")
+            //onDestroyView()
             //setViewVisiblity(ActivityA.VIEW_MODE)
         }
     }
     private fun callActivityWith(operationType: OperationType){
+        //this.view_mode = 1
+        //setViewVisiblity(view_mode)
         val ordinalValue = OperationType.valueOf(operationType.toString())
         (activity as ActivityA).setOperationType(ordinalValue.ordinal)
     }

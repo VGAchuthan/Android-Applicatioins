@@ -26,8 +26,8 @@ import kotlinx.android.synthetic.main.fragment_calculation.*
  * create an instance of this fragment.
  */
 class CalculationFragment : Fragment() {
-    private var input1 = 0.0
-    private var input2 = 0.0
+    //private var input1 = 0.0
+    //private var input2 = 0.0
 
 
     // TODO: Rename and change types of parameters
@@ -39,11 +39,7 @@ class CalculationFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        //Log.e("OnFragCreate","on create in fragment CALCULATION")
-//        if (arguments != null) {
-//            mParam1 = arguments.getString(ARG_PARAM1)
-//            mParam2 = arguments.getString(ARG_PARAM2)
-//        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -51,22 +47,6 @@ class CalculationFragment : Fragment() {
         //Log.e("OnFragCreate","on create view in fragment CALCULATION")
 
          return inflater?.inflate(R.layout.fragment_calculation, container, false)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle?) {
-        //outState?.putDouble("value1", input1)
-        //outState?.putDouble("value2", input2)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        //Log.e("OnFragCreate","on view state restored in fragment CALCULATION")
-        if(savedInstanceState !=null){
-            input1 = savedInstanceState!!.getDouble("input1")
-            input2 = savedInstanceState!!.getDouble("input2")
-        }
-
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -126,71 +106,19 @@ class CalculationFragment : Fragment() {
     }
     private fun returnValuesBackToCallingActivity(value1 : Double, value2 : Double,answer : Double, type : OperationType){
         val resultText = "Action  : "+type.toString()+"\nInput 1 : "+value1+"\nInput 2 : "+value2+"\nResult  : "+answer
-        this.input1 = value1
-        this.input2 = value2
-        //Log.e("frag 2","insisde return vlaues")
-
-       // activity.onBackPressed()
         resetEdittextViews()
-        //fragmentManager.beginTransaction().remove(this).commit()
-        //fragmentManager.beginTransaction().detach(this)
         (activity as ActivityA).setResultString(resultText)
-
-
-
-
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
 
-    }
     private fun resetEdittextViews(){
         edittext_value1.text.clear()
         edittext_value2.text.clear()
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        //edittext_value1.text.clear()
-        //edittext_value2.text.clear()
-    }
-
 
     // TODO: Rename method, update argument and hook method into UI event
-    /*fun onButtonPressed(uri: Uri) {
-        if (mListener != null) {
-            mListener!!.onFragmentInteraction(uri)
-        }
-    }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-    }*/
 
     companion object {
         // TODO: Rename parameter arguments, choose names that match
