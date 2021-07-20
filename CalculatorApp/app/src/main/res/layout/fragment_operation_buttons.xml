@@ -1,90 +1,99 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/operation_fragment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:id="@+id/operation_fragment"
     tools:context="com.example.user.calculatorapp.OperationButtonsFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
+        android:id="@+id/result_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_gravity="center"
-        android:id="@+id/result_view"
+        android:orientation="vertical"
 
         >
+
         <TextView
+            android:id="@+id/result_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/result_text_view"
-            android:text="Result"
-            android:padding="8dp"
-            android:textSize="22sp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
             android:layout_gravity="center"
-            android:textColor="@color/colorBlack"/>
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:padding="8dp"
+            android:text="Result"
+            android:textColor="@color/colorBlack"
+            android:textSize="22sp" />
 
         <Button
-            android:layout_width="wrap_content"
             android:id="@+id/btn_reset"
-            android:background="@drawable/rounded_button"
             style="@style/PrimaryButton"
+            android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
+            android:background="@drawable/rounded_button"
 
             android:text="Reset" />
 
 
-
     </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/operation_btn_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/operation_btn_view"
         android:orientation="vertical">
+
         <Button
             android:id="@+id/add_operation_button"
+            style="@style/PrimaryButton"
             android:layout_width="250dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:background="@drawable/rounded_button"
-            style="@style/PrimaryButton"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
             android:text="Add" />
 
         <Button
             android:id="@+id/sub_operation_button"
+            style="@style/PrimaryButton"
             android:layout_width="250dp"
             android:layout_gravity="center"
-
             android:layout_margin="10dp"
+
             android:background="@drawable/rounded_button"
-            style="@style/PrimaryButton"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
             android:text="Subtract" />
+
         <Button
             android:id="@+id/mul_operation_button"
+            style="@style/PrimaryButton"
             android:layout_width="250dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:background="@drawable/rounded_button"
-            style="@style/PrimaryButton"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
             android:text="Multiply" />
 
         <Button
             android:id="@+id/division_operation_button"
+            style="@style/PrimaryButton"
             android:layout_width="250dp"
             android:layout_gravity="center"
-
             android:layout_margin="10dp"
             android:background="@drawable/rounded_button"
-            style="@style/PrimaryButton"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
             android:text="Division" />
 
 
     </LinearLayout>
-
 
 
 </FrameLayout>

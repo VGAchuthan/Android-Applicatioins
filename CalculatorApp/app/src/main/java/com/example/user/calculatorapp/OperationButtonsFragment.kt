@@ -1,6 +1,7 @@
 package com.example.user.calculatorapp
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 //import android.app.Fragment
@@ -34,6 +35,8 @@ class OperationButtonsFragment() : Fragment() {
     lateinit private var operationButtonView : View
     lateinit private var resultTextView : TextView
     lateinit private var resetButton : Button
+    //var sharedPreference : SharedPreferences = (activity as ActivityA).getSharedPreferences("Operations", Context.MODE_PRIVATE)
+    //val editor = sharedPreference.edit()
     //constructor() : super()
     private var view_mode =0
     private var result_string = ""
@@ -53,6 +56,9 @@ class OperationButtonsFragment() : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        retainInstance = true
+
+        //fragment.setfra
        //Log.e("OnFragCreate","on create in fragment OPERATION BUTTONS")
     }
 
@@ -78,15 +84,20 @@ class OperationButtonsFragment() : Fragment() {
         val divButton = (division_operation_button)as Button
         resetButton = (btn_reset) as Button
         resultTextView = (result_text_view) as  TextView
-        result_string = getResultFromActivity()
-        if(!result_string.isEmpty()){
+        //result_string = sharedPreference.getString("result_string","")
+        result_string = OperationsInfo.result_string
+        println("after press add\n result string in operation fragmnent")
+        println(result_string)
+        if(OperationsInfo.mode == 2 && !result_string.isEmpty() ){
            // Log.e("TAG","result string is null")
+            //For result view
             this.view_mode = 1
         }
         else
             this.view_mode = 0
         setViewVisiblity(view_mode)
-        addButton.setOnClickListener { callActivityWith(OperationType.ADD) }
+        addButton.setOnClickListener {
+            callActivityWith(OperationType.ADD) }
         subButton.setOnClickListener { callActivityWith(OperationType.SUB) }
         mulButton.setOnClickListener { callActivityWith(OperationType.MULTIPLY) }
         divButton.setOnClickListener { callActivityWith(OperationType.DIVISION) }
@@ -94,29 +105,39 @@ class OperationButtonsFragment() : Fragment() {
 
             this.view_mode = 0
             setViewVisiblity(view_mode)
+            this.result_string =""
+            //editor.putString("result_string","")
+            //editor.commit()
+            OperationsInfo.mode = 0
+            OperationsInfo.result_string =""
+            OperationsInfo.operationType = -1
             (activity as ActivityA).setResultString("")
-            //onDestroyView()
-            //setViewVisiblity(ActivityA.VIEW_MODE)
+
         }
     }
     private fun callActivityWith(operationType: OperationType){
         //this.view_mode = 1
         //setViewVisiblity(view_mode)
         val ordinalValue = OperationType.valueOf(operationType.toString())
+        //editor.putInt("operationType",ordinalValue.ordinal)
+        //editor.commit()
+        OperationsInfo.operationType = ordinalValue.ordinal
         (activity as ActivityA).setOperationType(ordinalValue.ordinal)
     }
     private fun setViewVisiblity(viewMode : Int){
         when(viewMode){
             0->{
+                println("set visiblity in fragment 1, mode 0")
                 operationButtonView.visibility = View.VISIBLE
                 resetButton.visibility = View.INVISIBLE
                 resultView.visibility = View.INVISIBLE
             }
             1->{
+                println("set visiblity in fragment 1, mode 1")
                 operationButtonView.visibility = View.INVISIBLE
                 resetButton.visibility = View.VISIBLE
                 resultView.visibility = View.VISIBLE
-                resultTextView.text = result_string
+                resultTextView.text = OperationsInfo.result_string
             }
         }
     }

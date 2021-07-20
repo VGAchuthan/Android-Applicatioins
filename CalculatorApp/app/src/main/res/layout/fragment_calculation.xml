@@ -12,58 +12,56 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical">
+
         <EditText
-            android:layout_width="wrap_content"
-            android:minWidth="250dp"
-            android:maxWidth="400dp"
-            android:layout_height="wrap_content"
-            android:hint="Enter Value 1"
-            android:textSize="18sp"
-            android:padding="8dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_gravity="center"
-
-            android:inputType="numberDecimal"
             android:id="@+id/edittext_value1"
-            android:textColor="@color/colorBlack"
-            />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="20dp"
+            android:hint="Enter Value 1"
+            android:inputType="numberDecimal"
+            android:maxWidth="400dp"
+            android:minWidth="250dp"
 
+            android:padding="8dp"
+            android:textColor="@color/colorBlack"
+            android:textSize="18sp" />
 
 
         <EditText
             android:id="@+id/edittext_value2"
             android:layout_width="wrap_content"
-            android:minWidth="250dp"
-            android:maxWidth="400dp"
-
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:hint="Enter Value 2"
             android:layout_gravity="center"
-            android:padding="8dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="30dp"
+
             android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="20dp"
+            android:hint="Enter Value 2"
+            android:inputType="numberDecimal"
+            android:maxWidth="400dp"
+            android:minWidth="250dp"
+            android:padding="8dp"
             android:textColor="@color/colorBlack"
             android:textSize="18sp" />
 
         <Button
             android:id="@+id/btn_perform"
+            style="@style/PrimaryButton"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
+
             android:layout_gravity="center"
-
-            style="@style/PrimaryButton"
-            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-
+            android:layout_marginTop="20dp"
             android:background="@drawable/rounded_button"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
             android:padding="8dp"
-            android:text="Perform"
-            />
-
+            android:text="Perform" />
 
 
     </LinearLayout>

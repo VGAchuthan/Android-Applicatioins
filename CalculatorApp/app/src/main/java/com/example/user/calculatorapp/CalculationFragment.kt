@@ -3,6 +3,7 @@ package com.example.user.calculatorapp
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -35,6 +36,8 @@ class CalculationFragment : Fragment() {
 //    private var mParam2: String? = null
 //
 //    private var mListener: OnFragmentInteractionListener? = null
+   // var sharedPreference : SharedPreferences = (activity as ActivityA).getSharedPreferences("Operations", Context.MODE_PRIVATE)
+    //val editor = sharedPreference.edit()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +61,10 @@ class CalculationFragment : Fragment() {
         val value1 = (edittext_value1) as EditText
         val value2 = (edittext_value2) as EditText
         value1.requestFocus()
-        val operationType = OperationType.values().get((activity as ActivityA).getOperationType())
+       // val operationType = OperationType.values().get((activity as ActivityA).getOperationType())
+       // val operationType = OperationType.values().get(sharedPreference.getInt("operationType",-1))
+        val operationType = OperationType.values().get(OperationsInfo.operationType)
+        println("operation type in calculation fragment ${operationType.toString()}")
         btn_perform.text= operationType.toString()
         btn_perform.setOnClickListener {
 
@@ -107,7 +113,12 @@ class CalculationFragment : Fragment() {
     private fun returnValuesBackToCallingActivity(value1 : Double, value2 : Double,answer : Double, type : OperationType){
         val resultText = "Action  : "+type.toString()+"\nInput 1 : "+value1+"\nInput 2 : "+value2+"\nResult  : "+answer
         resetEdittextViews()
+        //editor.putString("result_string",resultText)
+        //editor.commit()
+        OperationsInfo.result_string = resultText
+        OperationsInfo.mode = 2
         (activity as ActivityA).setResultString(resultText)
+
     }
 
 
