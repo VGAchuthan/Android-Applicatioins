@@ -2,41 +2,61 @@ package com.example.user.calculatorapp
 
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+
 import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import com.example.user.calculatorapp.enums.OperationType
-import kotlinx.android.synthetic.main.fragment_calculation.*
+
 
 class CalculationFragment : Fragment() {
+    lateinit var value1 : EditText
+    lateinit var value2 : EditText
+    lateinit private var btn_perform : Button
+    private var operationTypeOrdinal : Int = 0
 
 
     // TODO: Rename and change types of parameters
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         retainInstance = true
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
          super.onCreateView(inflater, container, savedInstanceState)
          return inflater?.inflate(R.layout.fragment_calculation, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //NOTE : receives result from OperationButtonsFragment
+        setFragmentResultListener("mode"){key, bundle ->
+            operationTypeOrdinal = bundle.getInt("operationType")
+            initializeViews(view)
+
+        }
+        initializeViews(view)
+
         super.onViewCreated(view, savedInstanceState)
+    }
+    private fun initializeViews(view : View){
+        value1 = view.findViewById(R.id.edittext_value1)
+        value2 = view.findViewById(R.id.edittext_value2)
         resetEdittextViews()
-
-        val value1 = (edittext_value1) as EditText
-        val value2 = (edittext_value2) as EditText
         value1.requestFocus()
-        val operationType = OperationType.values().get(OperationsInfo.operationType)
+        val operationType = OperationType.values().get(operationTypeOrdinal)
+        btn_perform = view.findViewById<Button>(R.id.btn_perform)
 
-        btn_perform.text= operationType.toString()
+        btn_perform.text=  OperationType.values().get(operationTypeOrdinal).toString()
         btn_perform.setOnClickListener {
             if((value1.text.toString().isEmpty()) && (value2.text.toString().isEmpty())){
                 Toast.makeText(activity,"Enter all numbers", Toast.LENGTH_SHORT).show()
@@ -54,6 +74,7 @@ class CalculationFragment : Fragment() {
 
             }
         }
+
     }
     private fun performOperation(value1 : Double, value2 : Double, type : OperationType){
         when(type){
@@ -69,7 +90,7 @@ class CalculationFragment : Fragment() {
                 returnValuesBackToCallingActivity(value1,value2,value1*value2,type)
 
             }
-            OperationType.DIVISION ->{
+            OperationType.DIVIDE ->{
                 if(value2 == 0.0){
                     Toast.makeText(activity,"Enter Non Zero Value for Value 2 ", Toast.LENGTH_SHORT).show()
                 }
@@ -82,16 +103,17 @@ class CalculationFragment : Fragment() {
     private fun returnValuesBackToCallingActivity(value1 : Double, value2 : Double,answer : Double, type : OperationType){
         val resultText = "Action  : "+type.toString()+"\nInput 1 : "+value1+"\nInput 2 : "+value2+"\nResult  : "+answer
         resetEdittextViews()
-        OperationsInfo.result_string = resultText
-        OperationsInfo.mode = 2
-        (activity as ActivityA).setResultString(resultText)
+        //NOTE : send result to OperationButtonsFragment
+        setFragmentResult("result", bundleOf("result_string" to resultText,"view_mode" to ViewModes.VIEW_RESULT))
+        //NOTE : send result to Activity
+        setFragmentResult("showResultView", bundleOf("view_mode" to ViewModes.VIEW_RESULT))
 
     }
 
 
     private fun resetEdittextViews(){
-        edittext_value1.text.clear()
-        edittext_value2.text.clear()
+        value1.text.clear()
+        value2.text.clear()
     }
 
 
@@ -101,8 +123,7 @@ class CalculationFragment : Fragment() {
     companion object {
         // TODO: Rename parameter arguments, choose names that match
         // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private val ARG_PARAM1 = "param1"
-        private val ARG_PARAM2 = "param2"
+
         // TODO: Rename and change types and number of parameters
         var fragment : CalculationFragment?= null
         fun newInstance(): CalculationFragment {

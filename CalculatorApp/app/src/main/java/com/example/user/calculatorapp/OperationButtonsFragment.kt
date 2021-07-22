@@ -1,15 +1,18 @@
 package com.example.user.calculatorapp
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import com.example.user.calculatorapp.enums.OperationType
-import kotlinx.android.synthetic.main.fragment_operation_buttons.*
+
 
 
 /**
@@ -29,82 +32,96 @@ class OperationButtonsFragment() : Fragment() {
     lateinit private var operationButtonView : View
     lateinit private var resultTextView : TextView
     lateinit private var resetButton : Button
-    private var view_mode =0
+    private var view_mode  : String = ViewModes.VIEW_OPERATION_BUTTON
     private var result_string = ""
 
+    init{
+
+
+    }
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        //NOTE : receive results from Calculation Fragment
+        setFragmentResultListener("result"){key, bundle ->
+            result_string = bundle.getString("result_string")
+
+            this.view_mode = ViewModes.VIEW_RESULT
+            setViewVisiblity(this.view_mode)
+
+        }
         super.onCreate(savedInstanceState)
         retainInstance = true
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-       // Log.e("OnFragCreate","on create view in fragment")
-        return inflater?.inflate(R.layout.fragment_operation_buttons, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater?.inflate(R.layout.fragment_operations_button, container, false)
     }
 
+
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        //Log.e("OnFragCreate","on view state restore in fragment OPERATION BUTTONS")
+
         super.onViewStateRestored(savedInstanceState)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
-        resultView = (result_view) as LinearLayout
-        operationButtonView = (operation_btn_view)
-        val addButton = (add_operation_button) as Button
-        val subButton = (sub_operation_button) as Button
-        val mulButton = (mul_operation_button)as Button
-        val divButton = (division_operation_button)as Button
-        resetButton = (btn_reset) as Button
-        resultTextView = (result_text_view) as  TextView
-        result_string = OperationsInfo.result_string
-        println("after press add\n result string in operation fragmnent")
-        println(result_string)
-        if(OperationsInfo.mode == 2 && !result_string.isEmpty() ){
-            this.view_mode = 1
-        }
-        else
-            this.view_mode = 0
+        resultView = view.findViewById(R.id.result_view)
+        operationButtonView = view.findViewById(R.id.operation_btn_view)
+        val addButton = view.findViewById<Button>(R.id.add_operation_button)
+        val subButton = view.findViewById<Button>(R.id.sub_operation_button) as Button
+        val mulButton = view.findViewById<Button>(R.id.mul_operation_button)as Button
+        val divButton = view.findViewById<Button>(R.id.division_operation_button)as Button
+        resetButton = view.findViewById<Button>(R.id.btn_reset) as Button
+        resultTextView = view.findViewById(R.id.result_text_view)
+        //
         setViewVisiblity(view_mode)
         addButton.setOnClickListener {
             callActivityWith(OperationType.ADD) }
         subButton.setOnClickListener { callActivityWith(OperationType.SUB) }
         mulButton.setOnClickListener { callActivityWith(OperationType.MULTIPLY) }
-        divButton.setOnClickListener { callActivityWith(OperationType.DIVISION) }
+        divButton.setOnClickListener { callActivityWith(OperationType.DIVIDE) }
         resetButton.setOnClickListener {
 
-            this.view_mode = 0
+            this.view_mode = ViewModes.VIEW_OPERATION_BUTTON
             setViewVisiblity(view_mode)
             this.result_string =""
-            OperationsInfo.mode = 0
-            OperationsInfo.result_string =""
-            OperationsInfo.operationType = -1
-            (activity as ActivityA).setResultString("")
+            //NOTE :send result to Activity
+            setFragmentResult("resetView", bundleOf("view_mode" to ViewModes.VIEW_OPERATION_BUTTON))
+
 
         }
     }
     private fun callActivityWith(operationType: OperationType){
-        val ordinalValue = OperationType.valueOf(operationType.toString())
-        OperationsInfo.operationType = ordinalValue.ordinal
-        (activity as ActivityA).setOperationType(ordinalValue.ordinal)
+
+        //NOTE : Send Result to Calculation Fragment
+        setFragmentResult("mode", bundleOf("operationType" to operationType.ordinal))
+        //NOTE : send Result to Activity
+        setFragmentResult("showCalculationFragment", bundleOf("view_mode" to ViewModes.VIEW_CALCULATION))
+
+
     }
-    private fun setViewVisiblity(viewMode : Int){
+    private fun setViewVisiblity(viewMode : String){
         when(viewMode){
-            0->{
+            ViewModes.VIEW_OPERATION_BUTTON->{
 
                 operationButtonView.visibility = View.VISIBLE
                 resetButton.visibility = View.INVISIBLE
                 resultView.visibility = View.INVISIBLE
             }
-            1->{
+            ViewModes.VIEW_RESULT->{
 
                 operationButtonView.visibility = View.INVISIBLE
                 resetButton.visibility = View.VISIBLE
                 resultView.visibility = View.VISIBLE
-                resultTextView.text = OperationsInfo.result_string
+                resultTextView.text = result_string
             }
         }
     }
@@ -133,9 +150,6 @@ class OperationButtonsFragment() : Fragment() {
         var fragment  : OperationButtonsFragment? = null
         fun newInstance(): OperationButtonsFragment {
 
-            val args = Bundle()
-            //Log.e("INSTNCE CREATE","INSTACE FOR OPEraton fragment")
-            var localfragment = fragment
             if(fragment == null)
                 fragment = OperationButtonsFragment()
 
