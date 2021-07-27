@@ -1,6 +1,8 @@
 package com.example.user.calculatorapp
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -44,17 +46,27 @@ class OperationButtonsFragment() : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+
+    }
+
+    override fun onAttach(context: Context) {
         //NOTE : receive results from Calculation Fragment
         setFragmentResultListener("result"){key, bundle ->
             result_string = bundle.getString("result_string")
 
             this.view_mode = ViewModes.VIEW_RESULT
+            Log.e("FRAGMENT 1","modev: $result_string")
             setViewVisiblity(this.view_mode)
 
         }
-        super.onCreate(savedInstanceState)
-        retainInstance = true
+        super.onAttach(context)
+    }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

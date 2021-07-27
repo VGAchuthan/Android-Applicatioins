@@ -10,10 +10,7 @@ import androidx.fragment.app.setFragmentResultListener
 
 class ActivityA : FragmentActivity() {
 
-
     private var view_mode: String = ViewModes.VIEW_OPERATION_BUTTON
-
-
     private var result_string : String =""
     private var operationType = 0
     private val operationButtonFragment  = OperationButtonsFragment.newInstance()
@@ -42,10 +39,11 @@ class ActivityA : FragmentActivity() {
             //Log.e("IN MaiN LISTENER","SHOW CALC FRAGMENT VIEW MODE : $view_mode")
             viewVisiblity()
         }
+
         //NOTE : receives result from CalculationFragment
         supportFragmentManager.setFragmentResultListener("showResultView", this){ requestKey, bundle ->
             this.view_mode = bundle.getString("view_mode")
-           // Log.e("IN MaiN LISTENER","SHOW Result VIEW MODE : $view_mode")
+            Log.e("IN MaiN LISTENER","SHOW Result VIEW MODE : $view_mode")
             viewVisiblity()
         }
         //NOTE : receives result from OperationButtonsFragment
@@ -54,12 +52,6 @@ class ActivityA : FragmentActivity() {
             //Log.e("IN MaiN LISTENER","Reset VIEW MODE : $view_mode")
             viewVisiblity()
         }
-
-
-        left_fragment = findViewById(R.id.left_fragment)
-
-
-        orientation = resources.configuration.orientation
         if(savedInstanceState == null){
             view_mode =ViewModes.VIEW_OPERATION_BUTTON
             result_string =""
@@ -72,6 +64,17 @@ class ActivityA : FragmentActivity() {
 
         }
 
+    }
+
+    override fun onResume() {
+
+        left_fragment = findViewById(R.id.left_fragment)
+        orientation = resources.configuration.orientation
+
+        // NOTE : OperationButtonFragment is added to Left Fragment irrespective of orientation mode
+        if(!operationButtonFragment.isAdded)
+            supportFragmentManager.beginTransaction().add(R.id.left_fragment, operationButtonFragment).commitNow()
+
         if(orientation == Configuration.ORIENTATION_PORTRAIT){
             setFragmentsForPortraitMode()
             viewVisiblity()
@@ -82,27 +85,13 @@ class ActivityA : FragmentActivity() {
             setFragmentsForLandscapeMode()
             viewVisiblity()
         }
+        super.onResume()
     }
-
     private fun setFragmentsForPortraitMode(){
-        if(calculationFragment.isAdded){
-            supportFragmentManager.beginTransaction().remove(calculationFragment).commitNow()
-        }
-        if(!operationButtonFragment.isAdded)
-            supportFragmentManager.beginTransaction().add(R.id.left_fragment, operationButtonFragment).commitNow()
-
+            supportFragmentManager.beginTransaction().add(R.id.left_fragment,calculationFragment).commitNow()
     }
     private fun setFragmentsForLandscapeMode(){
-        if(!operationButtonFragment.isAdded)
-            supportFragmentManager.beginTransaction().add(R.id.left_fragment, operationButtonFragment).commitNow()
-        else{
-            //supportFragmentManager.beginTransaction().show( operationButtonFragment).commitNow()
-            supportFragmentManager.beginTransaction().remove( operationButtonFragment).commitNow()
-            supportFragmentManager.beginTransaction().add(R.id.left_fragment, operationButtonFragment).commitNow()
-        }
-        if(calculationFragment.isAdded){
-            supportFragmentManager.beginTransaction().remove(calculationFragment).commitNow()
-        }
+//
         supportFragmentManager.beginTransaction().add(R.id.right_fragment, calculationFragment).commitNow()
 
     }
@@ -121,28 +110,19 @@ class ActivityA : FragmentActivity() {
     private fun landscapeViewVisiblity(){
         when(view_mode){
             ViewModes.VIEW_OPERATION_BUTTON -> {
-                supportFragmentManager.beginTransaction().show(operationButtonFragment).commitNow()
-                supportFragmentManager.beginTransaction().hide(calculationFragment).commitNow()
-                left_fragment.visibility = View.VISIBLE
 
                 right_fragment.visibility = View.INVISIBLE
             }
             ViewModes.VIEW_CALCULATION -> {
                 supportFragmentManager.beginTransaction().show(calculationFragment).commitNow()
-                left_fragment.visibility = View.VISIBLE
+                /*NOTE : This show transaction is efficient when we rotate device from ViewModes.VIEW_CALCULATION in
+                  portrait mode to landscape , because in portrait mode operation button fragment is hided */
+                supportFragmentManager.beginTransaction().show(operationButtonFragment).commitNow()
                 right_fragment.visibility = View.VISIBLE
 
             }
             ViewModes.VIEW_RESULT->{
-
                 right_fragment.visibility = View.INVISIBLE
-                supportFragmentManager.beginTransaction().hide(calculationFragment).commitNow()
-
-                supportFragmentManager.beginTransaction().show(operationButtonFragment).commitNow()
-
-                left_fragment.visibility = View.VISIBLE
-
-
             }
         }
     }
@@ -151,18 +131,22 @@ class ActivityA : FragmentActivity() {
     private fun portraitViewVisiblity(){
         when(view_mode){
             ViewModes.VIEW_OPERATION_BUTTON, ViewModes.VIEW_RESULT ->{
-                left_fragment.visibility = View.VISIBLE
-                supportFragmentManager.beginTransaction().replace(R.id.left_fragment,operationButtonFragment).commitNow()
-
+                supportFragmentManager.beginTransaction().show(operationButtonFragment).hide(calculationFragment).commitNow()
+                println(supportFragmentManager.backStackEntryCount)
             }
             ViewModes.VIEW_CALCULATION ->{
-                supportFragmentManager.beginTransaction().replace(R.id.left_fragment,CalculationFragment.newInstance()).commitNow()
-
-                left_fragment.visibility = View.VISIBLE
+                supportFragmentManager.beginTransaction().hide(operationButtonFragment).show(calculationFragment).commitNow()
             }
 
         }
     }
+
+    override fun onPause() {
+      supportFragmentManager.beginTransaction().remove(calculationFragment).commitNow()
+      super.onPause()
+    }
+
+
 
 
     override fun onBackPressed() {
@@ -178,4 +162,6 @@ class ActivityA : FragmentActivity() {
         else
             super.onBackPressed()
     }
+
+
 }

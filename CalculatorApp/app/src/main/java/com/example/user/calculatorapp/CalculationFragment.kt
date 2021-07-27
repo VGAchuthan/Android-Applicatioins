@@ -1,6 +1,7 @@
 package com.example.user.calculatorapp
 
 
+import android.content.Context
 import android.os.Bundle
 
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ import com.example.user.calculatorapp.enums.OperationType
 class CalculationFragment : Fragment() {
     lateinit var value1 : EditText
     lateinit var value2 : EditText
+    private var rootView : View? = null
     lateinit private var btn_perform : Button
     private var operationTypeOrdinal : Int = 0
 
@@ -27,34 +29,40 @@ class CalculationFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //NOTE : receives result from OperationButtonsFragment
+        setFragmentResultListener("mode"){key, bundle ->
+            operationTypeOrdinal = bundle.getInt("operationType")
+            initializeViews(rootView)
 
-        retainInstance = true
+        }
+
 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
          super.onCreateView(inflater, container, savedInstanceState)
-         return inflater?.inflate(R.layout.fragment_calculation, container, false)
+        rootView =inflater?.inflate(R.layout.fragment_calculation, container, false)
+         return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //NOTE : receives result from OperationButtonsFragment
-        setFragmentResultListener("mode"){key, bundle ->
-            operationTypeOrdinal = bundle.getInt("operationType")
-            initializeViews(view)
 
-        }
-        initializeViews(view)
+        initializeViews(rootView)
 
         super.onViewCreated(view, savedInstanceState)
     }
-    private fun initializeViews(view : View){
-        value1 = view.findViewById(R.id.edittext_value1)
-        value2 = view.findViewById(R.id.edittext_value2)
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+    }
+    private fun initializeViews(view : View?){
+        value1 = view!!.findViewById(R.id.edittext_value1)
+        value2 = view!!.findViewById(R.id.edittext_value2)
         resetEdittextViews()
         value1.requestFocus()
         val operationType = OperationType.values().get(operationTypeOrdinal)
-        btn_perform = view.findViewById<Button>(R.id.btn_perform)
+        btn_perform = view!!.findViewById<Button>(R.id.btn_perform)
 
         btn_perform.text=  OperationType.values().get(operationTypeOrdinal).toString()
         btn_perform.setOnClickListener {
@@ -103,10 +111,15 @@ class CalculationFragment : Fragment() {
     private fun returnValuesBackToCallingActivity(value1 : Double, value2 : Double,answer : Double, type : OperationType){
         val resultText = "Action  : "+type.toString()+"\nInput 1 : "+value1+"\nInput 2 : "+value2+"\nResult  : "+answer
         resetEdittextViews()
-        //NOTE : send result to OperationButtonsFragment
-        setFragmentResult("result", bundleOf("result_string" to resultText,"view_mode" to ViewModes.VIEW_RESULT))
+        sendResultToOperationFragment(resultText)
+
         //NOTE : send result to Activity
         setFragmentResult("showResultView", bundleOf("view_mode" to ViewModes.VIEW_RESULT))
+
+    }
+    private fun sendResultToOperationFragment(resultText : String){
+        //NOTE : send result to OperationButtonsFragment
+        setFragmentResult("result", bundleOf("result_string" to resultText,"view_mode" to ViewModes.VIEW_RESULT))
 
     }
 
