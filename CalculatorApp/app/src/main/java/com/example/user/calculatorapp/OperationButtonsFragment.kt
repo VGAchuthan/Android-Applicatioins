@@ -31,6 +31,7 @@ class OperationButtonsFragment() : Fragment() {
     lateinit var recyclerView  : RecyclerView
     private var view_mode  : String = ViewModes.VIEW_OPERATION_BUTTON
     private var result_string = ""
+    private var operationResult : OperationResult? = null
     lateinit var dataSet : Array<Views>
     lateinit var adapter : OperationButtonFragmentAdapter
 
@@ -41,21 +42,27 @@ class OperationButtonsFragment() : Fragment() {
     }
 
     override fun onAttach(context: Context) {
-        //NOTE : receive results from Calculation Fragment
-        setFragmentResultListener("result"){key, bundle ->
-            result_string = bundle.getString("result_string")
-
-            this.view_mode = ViewModes.VIEW_RESULT
-        //    Log.e("FRAGMENT 1","modev: $result_string")
-            setViewVisiblity(this.view_mode)
-
-        }
-        super.onAttach(context)
+               super.onAttach(context)
     }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //Log.e("FRAG 1", "ON CREATE VIEW")
+        //NOTE : receive results from Calculation Fragment
+        setFragmentResultListener("result"){key, bundle ->
+            //result_string = bundle.getString("result_string")
+            var input1 = bundle.getString("input1")
+            var input2 = bundle.getString("input2")
+            var answer = bundle.getString("answer")
+            var action = bundle.getString("action")
+            operationResult = OperationResult(action,input1, input2, answer)
+
+            this.view_mode = ViewModes.VIEW_RESULT
+            //    Log.e("FRAGMENT 1","modev: $result_string")
+            setViewVisiblity(this.view_mode)
+
+        }
+
         return inflater?.inflate(R.layout.fragment_operations_button, container, false)
     }
 
@@ -74,7 +81,7 @@ class OperationButtonsFragment() : Fragment() {
         //setAdapter()
         dataSet = arrayOf(Views(0),Views(1, true))
         adapter = OperationButtonFragmentAdapter(this, dataSet)
-        adapter.notifyDataSetChanged()
+        //adapter.notifyDataSetChanged()
         recyclerView.adapter = adapter
         resetButton = view.findViewById<Button>(R.id.btn_reset) as Button
         resetButton.visibility = View.INVISIBLE
@@ -88,6 +95,7 @@ class OperationButtonsFragment() : Fragment() {
                 this.view_mode = ViewModes.VIEW_OPERATION_BUTTON
                 setViewVisiblity(view_mode)
                 this.result_string = ""
+                this.operationResult = null
                 //NOTE :send result to Activity
                 setFragmentResult("resetView", bundleOf("view_mode" to ViewModes.VIEW_OPERATION_BUTTON))
             }
@@ -98,13 +106,14 @@ class OperationButtonsFragment() : Fragment() {
         when(viewMode){
             ViewModes.VIEW_OPERATION_BUTTON->{
                 dataSet[1].isHide = true
-                dataSet[1].resultString = null
+                dataSet[1].operationResult = null
+                operationResult = null
                 dataSet[0].isHide = false
                 adapter.notifyDataSetChanged()
                 resetButton.visibility = View.INVISIBLE
             }
             ViewModes.VIEW_RESULT ->{
-                dataSet[1].resultString = result_string
+                dataSet[1].operationResult = operationResult
                 dataSet[1].isHide = false
                 dataSet[0].isHide = true
                 adapter.notifyDataSetChanged()
@@ -136,13 +145,12 @@ class OperationButtonsFragment() : Fragment() {
         // TODO: Rename parameter arguments, choose names that match
         // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
-        var fragment  : OperationButtonsFragment? =null
+        //var fragment  : OperationButtonsFragment? =null
         fun newInstance(): OperationButtonsFragment {
+            var fragment  =  OperationButtonsFragment()
+//            if(fragment == null)
 
-            if(fragment == null)
-                fragment = OperationButtonsFragment()
-
-            return fragment!!
+            return fragment
         }
     }
 

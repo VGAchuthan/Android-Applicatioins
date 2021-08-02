@@ -29,6 +29,7 @@ class CalculationFragment : Fragment() {
     // TODO: Rename and change types of parameters
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //retainInstance = true
         super.onCreate(savedInstanceState)
         //NOTE : receives result from OperationButtonsFragment
         setFragmentResultListener("mode"){key, bundle ->
@@ -114,15 +115,16 @@ class CalculationFragment : Fragment() {
     private fun returnValuesBackToCallingActivity(value1 : Double, value2 : Double,answer : Double, type : OperationType){
         val resultText = "Action  : "+type.toString()+"\nInput 1 : "+value1+"\nInput 2 : "+value2+"\nResult  : "+answer
         resetEdittextViews()
-        sendResultToOperationFragment(resultText)
+        sendResultToOperationFragment(value1 , value2,answer , type )
 
         //NOTE : send result to Activity
         setFragmentResult("showResultView", bundleOf("view_mode" to ViewModes.VIEW_RESULT))
 
     }
-    private fun sendResultToOperationFragment(resultText : String){
+    private fun sendResultToOperationFragment(value1 : Double, value2 : Double,answer : Double, type : OperationType){
         //NOTE : send result to OperationButtonsFragment
-        setFragmentResult("result", bundleOf("result_string" to resultText,"view_mode" to ViewModes.VIEW_RESULT))
+        setFragmentResult("result", bundleOf("input1" to value1.toString(),"input2" to value2.toString(),
+                "answer" to answer.toString(),"action" to type.toString(),"view_mode" to ViewModes.VIEW_RESULT))
 
     }
 
@@ -137,14 +139,14 @@ class CalculationFragment : Fragment() {
 
 
     companion object {
-        var fragment : CalculationFragment? = null
+        //var fragment : CalculationFragment? = null
         fun newInstance(): CalculationFragment {
-
-            if(fragment == null){
-                fragment = CalculationFragment()
-
-            }
-            return fragment!!
+            var fragment = CalculationFragment()
+//            if(fragment == null){
+//                fragment = CalculationFragment()
+//
+//            }
+            return fragment
         }
     }
 }// Required empty public constructor

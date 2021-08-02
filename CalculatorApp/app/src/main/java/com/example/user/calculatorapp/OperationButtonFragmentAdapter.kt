@@ -84,10 +84,19 @@ class OperationButtonFragmentAdapter(context : OperationButtonsFragment, dataSet
     }
 
     private inner class ResultViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        var resultTextView = itemView.findViewById<TextView>(R.id.result_text_view)
+        var action = itemView.findViewById<TextView>(R.id.result_text_view_action)
+        var input1 = itemView.findViewById<TextView>(R.id.result_text_view_input1)
+        var input2 = itemView.findViewById<TextView>(R.id.result_text_view_input2)
+        var result = itemView.findViewById<TextView>(R.id.result_text_view_answer)
         fun bind(position: Int) {
             val recyclerViewModel = list[position]
-            resultTextView.text = recyclerViewModel.resultString
+            if(recyclerViewModel.operationResult != null){
+                action.text = "Action  : " + recyclerViewModel.operationResult?.action
+                input1.text = "Input 1 : " + recyclerViewModel.operationResult?.input1
+                input2.text = "Input 2 : " + recyclerViewModel.operationResult?.input2
+                result.text = "Result  : " + recyclerViewModel.operationResult?.answer
+            }
+
             if(recyclerViewModel.isHide){
                 //itemView.visibility = View.INVISIBLE
                 itemView.layoutParams.height = 0

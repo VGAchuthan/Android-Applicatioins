@@ -1,29 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_result_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/layout_result_view">
+    android:layout_height="match_parent">
+
     <LinearLayout
         android:id="@+id/result_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/result_text_view"
+            android:id="@+id/result_text_view_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
             android:layout_marginTop="20dp"
+            android:gravity="left"
             android:padding="8dp"
-            android:text="Result"
+            android:text="Action : "
             android:textColor="@color/colorBlack"
             android:textSize="22sp" />
 
+        <TextView
+            android:id="@+id/result_text_view_input1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:padding="8dp"
+            android:text= "Input 1: "
+            android:textColor="@color/colorBlack"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/result_text_view_input2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:padding="8dp"
+            android:text="Input 2 :"
+            android:textColor="@color/colorBlack"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/result_text_view_answer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:gravity="left"
+            android:padding="8dp"
+            android:text="Result : "
+            android:textColor="@color/colorBlack"
+            android:textSize="22sp" />
 
 
     </LinearLayout>

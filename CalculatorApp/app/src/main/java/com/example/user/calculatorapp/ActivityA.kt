@@ -71,10 +71,12 @@ class ActivityA : FragmentActivity() {
             view_mode = savedInstanceState.getString("viewMode")
             result_string = savedInstanceState.getString("result")
             operationType = savedInstanceState.getInt("operationType")
+            operationButtonFragment = supportFragmentManager.findFragmentById(R.id.left_fragment) as OperationButtonsFragment
 
 
         }
         Log.e("ACTIVITY LIFECYCLE","ON CREATE")
+        println(operationButtonFragment)
 
 
     }
@@ -180,11 +182,12 @@ class ActivityA : FragmentActivity() {
 
 
         Log.e("ACTIVITY LIFECYCLE","ON STOP")
-
+        println(operationButtonFragment)
+        //if(orientation == Configuration.ORIENTATION_PORTRAIT){
             supportFragmentManager.beginTransaction().remove(calculationFragment)
 //                .remove(operationButtonFragment)
                     .commitNow()
-
+        //}
         super.onStop()
     }
 
