@@ -149,6 +149,7 @@ class OperationButtonsFragment() : Fragment() {
         fun newInstance(): OperationButtonsFragment {
             var fragment  =  OperationButtonsFragment()
 //            if(fragment == null)
+//                fragment = OperationButtonsFragment()
 
             return fragment
         }
