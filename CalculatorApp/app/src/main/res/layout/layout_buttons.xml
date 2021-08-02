@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/layout_buttons_view">
+
+    <LinearLayout
+        android:id="@+id/operation_btn_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/add_operation_button"
+            style="@style/PrimaryButton"
+            android:layout_width="250dp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:background="@drawable/rounded_button"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Addition" />
+
+        <Button
+            android:id="@+id/sub_operation_button"
+            style="@style/PrimaryButton"
+            android:layout_width="250dp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+
+            android:background="@drawable/rounded_button"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Subtraction" />
+
+        <Button
+            android:id="@+id/mul_operation_button"
+            style="@style/PrimaryButton"
+            android:layout_width="250dp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:background="@drawable/rounded_button"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Multiplication" />
+
+        <Button
+            android:id="@+id/division_operation_button"
+            style="@style/PrimaryButton"
+            android:layout_width="250dp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:background="@drawable/rounded_button"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Division" />
+
+
+    </LinearLayout>
+
+
+</FrameLayout>

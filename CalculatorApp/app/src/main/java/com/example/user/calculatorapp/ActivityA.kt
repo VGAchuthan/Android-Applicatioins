@@ -13,20 +13,30 @@ class ActivityA : FragmentActivity() {
     private var view_mode: String = ViewModes.VIEW_OPERATION_BUTTON
     private var result_string : String =""
     private var operationType = 0
-    private val operationButtonFragment  = OperationButtonsFragment.newInstance()
+
+    private var operationButtonFragment  = OperationButtonsFragment.newInstance()
     private val calculationFragment   = CalculationFragment.newInstance()
+
 
     private var orientation : Int = -1
     lateinit var left_fragment : View
     lateinit var right_fragment : View
 
-
     override fun onSaveInstanceState(outState: Bundle) {
+        Log.e("ACTIVITY LIFECYCLE", "ON SAVE INSTANCE  IS CALLED")
 
         outState?.putString("viewMode",view_mode)
         outState?.putString("result",result_string)
         outState?.putInt("operationType", operationType)
+
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+
+
+        Log.e("ACTIVITY LIFECYCLE","ON RESTORE CALLED")
+        super.onRestoreInstanceState(savedInstanceState)
     }
 
 
@@ -43,7 +53,7 @@ class ActivityA : FragmentActivity() {
         //NOTE : receives result from CalculationFragment
         supportFragmentManager.setFragmentResultListener("showResultView", this){ requestKey, bundle ->
             this.view_mode = bundle.getString("view_mode")
-            Log.e("IN MaiN LISTENER","SHOW Result VIEW MODE : $view_mode")
+            //Log.e("IN MaiN LISTENER","SHOW Result VIEW MODE : $view_mode")
             viewVisiblity()
         }
         //NOTE : receives result from OperationButtonsFragment
@@ -62,18 +72,35 @@ class ActivityA : FragmentActivity() {
             result_string = savedInstanceState.getString("result")
             operationType = savedInstanceState.getInt("operationType")
 
+
         }
+        Log.e("ACTIVITY LIFECYCLE","ON CREATE")
+
 
     }
 
-    override fun onResume() {
 
+    override fun onStart() {
+        super.onStart()
+        Log.e("ACTIVITY LIFECYCLE","ON START")
+    }
+
+    override fun onResume() {
+        super.onResume()
         left_fragment = findViewById(R.id.left_fragment)
         orientation = resources.configuration.orientation
 
         // NOTE : OperationButtonFragment is added to Left Fragment irrespective of orientation mode
-        if(!operationButtonFragment.isAdded)
-            supportFragmentManager.beginTransaction().add(R.id.left_fragment, operationButtonFragment).commitNow()
+
+        if(!operationButtonFragment.isAdded){
+            supportFragmentManager.beginTransaction().apply {
+                add(R.id.left_fragment,operationButtonFragment)
+//                addToBackStack("Add OperationButtonFragment")
+                commitNow()
+            }
+
+        }
+
 
         if(orientation == Configuration.ORIENTATION_PORTRAIT){
             setFragmentsForPortraitMode()
@@ -85,14 +112,17 @@ class ActivityA : FragmentActivity() {
             setFragmentsForLandscapeMode()
             viewVisiblity()
         }
-        super.onResume()
+
+        Log.e("ACTIVITY LIFECYCLE","ON RESUME")
     }
     private fun setFragmentsForPortraitMode(){
-            supportFragmentManager.beginTransaction().add(R.id.left_fragment,calculationFragment).commitNow()
+        if(!calculationFragment.isAdded)
+            supportFragmentManager.beginTransaction().add(R.id.left_fragment,calculationFragment)/*.addToBackStack("Add CalculationFragment")*/.commitNow()
     }
     private fun setFragmentsForLandscapeMode(){
 //
-        supportFragmentManager.beginTransaction().add(R.id.right_fragment, calculationFragment).commitNow()
+        if(!calculationFragment.isAdded)
+            supportFragmentManager.beginTransaction().add(R.id.right_fragment, calculationFragment)/*.addToBackStack("Add CalculationFragment")*/.commitNow()
 
     }
     private fun viewVisiblity(){
@@ -132,7 +162,7 @@ class ActivityA : FragmentActivity() {
         when(view_mode){
             ViewModes.VIEW_OPERATION_BUTTON, ViewModes.VIEW_RESULT ->{
                 supportFragmentManager.beginTransaction().show(operationButtonFragment).hide(calculationFragment).commitNow()
-                println(supportFragmentManager.backStackEntryCount)
+                //println(supportFragmentManager.backStackEntryCount)
             }
             ViewModes.VIEW_CALCULATION ->{
                 supportFragmentManager.beginTransaction().hide(operationButtonFragment).show(calculationFragment).commitNow()
@@ -142,12 +172,28 @@ class ActivityA : FragmentActivity() {
     }
 
     override fun onPause() {
-      supportFragmentManager.beginTransaction().remove(calculationFragment).commitNow()
+        Log.e("ACTIVITY LIFECYCLE", "ON PAUSE IS CALLED")
       super.onPause()
     }
 
+    override fun onStop() {
 
 
+        Log.e("ACTIVITY LIFECYCLE","ON STOP")
+
+            supportFragmentManager.beginTransaction().remove(calculationFragment)
+//                .remove(operationButtonFragment)
+                    .commitNow()
+
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+
+        super.onDestroy()
+        Log.e("ACTIVITY LIFECYCLE","ON DESTROY")
+
+    }
 
     override fun onBackPressed() {
         if(this.view_mode == ViewModes.VIEW_CALCULATION){
@@ -162,6 +208,7 @@ class ActivityA : FragmentActivity() {
         else
             super.onBackPressed()
     }
+
 
 
 }

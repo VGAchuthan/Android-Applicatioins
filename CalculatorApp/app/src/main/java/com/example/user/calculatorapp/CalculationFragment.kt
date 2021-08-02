@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -78,6 +79,8 @@ class CalculationFragment : Fragment() {
                 Toast.makeText(activity,"Enter Value 2", Toast.LENGTH_SHORT).show()
             }
             else{
+                val keyBoard = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                keyBoard.hideSoftInputFromWindow(view.windowToken,0)
                 performOperation(value1.text.toString().toDouble(),value2.text.toString().toDouble(), operationType)
 
             }
@@ -134,11 +137,7 @@ class CalculationFragment : Fragment() {
 
 
     companion object {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-        // TODO: Rename and change types and number of parameters
-        var fragment : CalculationFragment?= null
+        var fragment : CalculationFragment? = null
         fun newInstance(): CalculationFragment {
 
             if(fragment == null){

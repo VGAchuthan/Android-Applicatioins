@@ -2,20 +2,16 @@ package com.example.user.calculatorapp
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
-import com.example.user.calculatorapp.enums.OperationType
-
-
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * A simple [Fragment] subclass.
@@ -30,26 +26,18 @@ import com.example.user.calculatorapp.enums.OperationType
 
 
 class OperationButtonsFragment() : Fragment() {
-    lateinit private var resultView : LinearLayout
-    lateinit private var operationButtonView : View
-    lateinit private var resultTextView : TextView
+
     lateinit private var resetButton : Button
+    lateinit var recyclerView  : RecyclerView
     private var view_mode  : String = ViewModes.VIEW_OPERATION_BUTTON
     private var result_string = ""
-
-    init{
-
-
-    }
-
+    lateinit var dataSet : Array<Views>
+    lateinit var adapter : OperationButtonFragmentAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
-        super.onCreate(savedInstanceState)
         retainInstance = true
-
+        super.onCreate(savedInstanceState)
     }
 
     override fun onAttach(context: Context) {
@@ -58,18 +46,16 @@ class OperationButtonsFragment() : Fragment() {
             result_string = bundle.getString("result_string")
 
             this.view_mode = ViewModes.VIEW_RESULT
-            Log.e("FRAGMENT 1","modev: $result_string")
+        //    Log.e("FRAGMENT 1","modev: $result_string")
             setViewVisiblity(this.view_mode)
 
         }
         super.onAttach(context)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        //Log.e("FRAG 1", "ON CREATE VIEW")
         return inflater?.inflate(R.layout.fragment_operations_button, container, false)
     }
 
@@ -83,59 +69,50 @@ class OperationButtonsFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview1)
 
-
-        resultView = view.findViewById(R.id.result_view)
-        operationButtonView = view.findViewById(R.id.operation_btn_view)
-        val addButton = view.findViewById<Button>(R.id.add_operation_button)
-        val subButton = view.findViewById<Button>(R.id.sub_operation_button) as Button
-        val mulButton = view.findViewById<Button>(R.id.mul_operation_button)as Button
-        val divButton = view.findViewById<Button>(R.id.division_operation_button)as Button
+        //setAdapter()
+        dataSet = arrayOf(Views(0),Views(1, true))
+        adapter = OperationButtonFragmentAdapter(this, dataSet)
+        adapter.notifyDataSetChanged()
+        recyclerView.adapter = adapter
         resetButton = view.findViewById<Button>(R.id.btn_reset) as Button
-        resultTextView = view.findViewById(R.id.result_text_view)
-        //
+        resetButton.visibility = View.INVISIBLE
+
+        recyclerView.layoutManager = LinearLayoutManager(this.context)
         setViewVisiblity(view_mode)
-        addButton.setOnClickListener {
-            callActivityWith(OperationType.ADD) }
-        subButton.setOnClickListener { callActivityWith(OperationType.SUB) }
-        mulButton.setOnClickListener { callActivityWith(OperationType.MULTIPLY) }
-        divButton.setOnClickListener { callActivityWith(OperationType.DIVIDE) }
-        resetButton.setOnClickListener {
 
-            this.view_mode = ViewModes.VIEW_OPERATION_BUTTON
-            setViewVisiblity(view_mode)
-            this.result_string =""
-            //NOTE :send result to Activity
-            setFragmentResult("resetView", bundleOf("view_mode" to ViewModes.VIEW_OPERATION_BUTTON))
+        // recyclerViewIsAdded= true
+            resetButton.setOnClickListener {
 
-
-        }
+                this.view_mode = ViewModes.VIEW_OPERATION_BUTTON
+                setViewVisiblity(view_mode)
+                this.result_string = ""
+                //NOTE :send result to Activity
+                setFragmentResult("resetView", bundleOf("view_mode" to ViewModes.VIEW_OPERATION_BUTTON))
+            }
+            //resetButton.visibility = View.INVISIBLE
     }
-    private fun callActivityWith(operationType: OperationType){
 
-        //NOTE : Send Result to Calculation Fragment
-        setFragmentResult("mode", bundleOf("operationType" to operationType.ordinal))
-        //NOTE : send Result to Activity
-        setFragmentResult("showCalculationFragment", bundleOf("view_mode" to ViewModes.VIEW_CALCULATION))
-
-
-    }
     private fun setViewVisiblity(viewMode : String){
         when(viewMode){
             ViewModes.VIEW_OPERATION_BUTTON->{
-
-                operationButtonView.visibility = View.VISIBLE
+                dataSet[1].isHide = true
+                dataSet[1].resultString = null
+                dataSet[0].isHide = false
+                adapter.notifyDataSetChanged()
                 resetButton.visibility = View.INVISIBLE
-                resultView.visibility = View.INVISIBLE
             }
-            ViewModes.VIEW_RESULT->{
+            ViewModes.VIEW_RESULT ->{
+                dataSet[1].resultString = result_string
+                dataSet[1].isHide = false
+                dataSet[0].isHide = true
+                adapter.notifyDataSetChanged()
 
-                operationButtonView.visibility = View.INVISIBLE
                 resetButton.visibility = View.VISIBLE
-                resultView.visibility = View.VISIBLE
-                resultTextView.text = result_string
             }
         }
+
     }
 
 
@@ -159,7 +136,7 @@ class OperationButtonsFragment() : Fragment() {
         // TODO: Rename parameter arguments, choose names that match
         // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
-        var fragment  : OperationButtonsFragment? = null
+        var fragment  : OperationButtonsFragment? =null
         fun newInstance(): OperationButtonsFragment {
 
             if(fragment == null)
