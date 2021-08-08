@@ -88,6 +88,7 @@ class OperationButtonFragmentAdapter(context : OperationButtonsFragment, dataSet
         var input1 = itemView.findViewById<TextView>(R.id.result_text_view_input1)
         var input2 = itemView.findViewById<TextView>(R.id.result_text_view_input2)
         var result = itemView.findViewById<TextView>(R.id.result_text_view_answer)
+
         fun bind(position: Int) {
             val recyclerViewModel = list[position]
             if(recyclerViewModel.operationResult != null){
@@ -96,6 +97,7 @@ class OperationButtonFragmentAdapter(context : OperationButtonsFragment, dataSet
                 input2.text = "Input 2 : " + recyclerViewModel.operationResult?.input2
                 result.text = "Result  : " + recyclerViewModel.operationResult?.answer
             }
+
 
             if(recyclerViewModel.isHide){
                 //itemView.visibility = View.INVISIBLE
@@ -108,6 +110,15 @@ class OperationButtonFragmentAdapter(context : OperationButtonsFragment, dataSet
 
         }
 
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        println(holder.adapterPosition)
+        super.onViewRecycled(holder)
+    }
+
+    override fun onFailedToRecycleView(holder: RecyclerView.ViewHolder): Boolean {
+        return super.onFailedToRecycleView(holder)
     }
     companion object {
         val VIEW_TYPE_BUTTONS = 0//ViewModes.VIEW_OPERATION_BUTTON

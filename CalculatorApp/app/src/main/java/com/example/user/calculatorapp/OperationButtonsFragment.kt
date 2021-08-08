@@ -1,5 +1,6 @@
 package com.example.user.calculatorapp
 
+import android.content.ContentValues
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.user.calculatorapp.providers.MyHistoryProvider
 
 /**
  * A simple [Fragment] subclass.
@@ -56,6 +59,7 @@ class OperationButtonsFragment() : Fragment() {
             var answer = bundle.getString("answer")
             var action = bundle.getString("action")
             operationResult = OperationResult(action,input1, input2, answer)
+            addToContentProvider(OperationResult(action,input1, input2, answer))
 
             this.view_mode = ViewModes.VIEW_RESULT
             //    Log.e("FRAGMENT 1","modev: $result_string")
@@ -121,6 +125,17 @@ class OperationButtonsFragment() : Fragment() {
                 resetButton.visibility = View.VISIBLE
             }
         }
+
+    }
+
+    private fun addToContentProvider(operationResult : OperationResult){
+        val values = ContentValues()
+        values.put("action", operationResult.action)
+        values.put("input1",operationResult.input1)
+        values.put("input2",operationResult.input2)
+        values.put("result",operationResult.answer)
+        activity?.contentResolver?.insert(MyHistoryProvider.CONTENT_URI,values)
+        Toast.makeText(activity,"ADDED IN CONTENT PROVIDER",Toast.LENGTH_SHORT).show()
 
     }
 

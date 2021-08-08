@@ -1,11 +1,17 @@
 package com.example.user.calculatorapp
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.Toolbar
+
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.setFragmentResultListener
+import com.example.user.calculatorapp.history.HistoryActivity
 
 
 class ActivityA : FragmentActivity() {
@@ -43,6 +49,13 @@ class ActivityA : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_a)
+        val actionBar = getActionBar()
+        setTitle(R.string.app_name)
+        val toolbar = findViewById<Toolbar>(R.id.main_activity_toolbar)
+        setActionBar(toolbar)
+//        actionBar.setDisplayHomeAsUpEnabled(true)
+        //setActionBar()
+
         //NOTE : receives result from OperationButtonsFragment
         supportFragmentManager.setFragmentResultListener("showCalculationFragment", this){ requestKey, bundle ->
             this.view_mode = bundle.getString("view_mode")
@@ -59,8 +72,11 @@ class ActivityA : FragmentActivity() {
         //NOTE : receives result from OperationButtonsFragment
         supportFragmentManager.setFragmentResultListener("resetView", this){ requestKey, bundle ->
            this.view_mode = bundle.getString("view_mode")
+
             //Log.e("IN MaiN LISTENER","Reset VIEW MODE : $view_mode")
+//            supportFragmentManager.beginTransaction().hide(operationButtonFragment).commitNow()
             viewVisiblity()
+
         }
         if(savedInstanceState == null){
             view_mode =ViewModes.VIEW_OPERATION_BUTTON
@@ -146,9 +162,14 @@ class ActivityA : FragmentActivity() {
                 right_fragment.visibility = View.INVISIBLE
             }
             ViewModes.VIEW_CALCULATION -> {
-                supportFragmentManager.beginTransaction().show(calculationFragment).commitNow()
+                supportFragmentManager.beginTransaction().apply {
+                    setCustomAnimations(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
+                    show(calculationFragment)
+                    commitNow()
+                }
                 /*NOTE : This show transaction is efficient when we rotate device from ViewModes.VIEW_CALCULATION in
                   portrait mode to landscape , because in portrait mode operation button fragment is hided */
+
                 supportFragmentManager.beginTransaction().show(operationButtonFragment).commitNow()
                 right_fragment.visibility = View.VISIBLE
 
@@ -163,11 +184,26 @@ class ActivityA : FragmentActivity() {
     private fun portraitViewVisiblity(){
         when(view_mode){
             ViewModes.VIEW_OPERATION_BUTTON, ViewModes.VIEW_RESULT ->{
-                supportFragmentManager.beginTransaction().show(operationButtonFragment).hide(calculationFragment).commitNow()
+                supportFragmentManager.beginTransaction().apply {
+                    //setCustomAnimations(R.anim.abc_slide_out_bottom, R.anim.abc_slide_out_bottom)
+                    hide(calculationFragment)
+                    setCustomAnimations(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
+                    show(operationButtonFragment)
+
+                    commitNow()
+                }
                 //println(supportFragmentManager.backStackEntryCount)
             }
             ViewModes.VIEW_CALCULATION ->{
-                supportFragmentManager.beginTransaction().hide(operationButtonFragment).show(calculationFragment).commitNow()
+                supportFragmentManager.beginTransaction().apply {
+                    //setCustomAnimations(R.anim.fragment_fade_enter, R.anim.fragment_fade_exit)
+                    hide(operationButtonFragment)
+                    setCustomAnimations(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
+                    show(calculationFragment)
+                    //setCustomAnimations(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
+
+                    commitNow()
+                }
             }
 
         }
@@ -196,6 +232,26 @@ class ActivityA : FragmentActivity() {
         super.onDestroy()
         Log.e("ACTIVITY LIFECYCLE","ON DESTROY")
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        //val menuInflater =
+        menuInflater.inflate(R.menu.activity_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?) = when(item!!.itemId) {
+
+            R.id.menu_action_history -> {
+                val historyIntent = Intent(this,HistoryActivity::class.java)
+                startActivity(historyIntent)
+                true
+            }
+        else->{
+            super.onOptionsItemSelected(item)
+        }
+
+//        return
     }
 
     override fun onBackPressed() {
