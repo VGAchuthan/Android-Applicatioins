@@ -2,6 +2,7 @@ package com.example.user.calculatorapp.history
 
 import android.content.Context
 import android.database.Cursor
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.View
@@ -38,11 +39,21 @@ class HistoryAdapter(context : Context, cursor : Cursor) : RecyclerView.Adapter<
         }
        // mCursor = newCursor
     }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+
+        Log.e("VIEW RECYCLED","${holder.adapterPosition}")
+        super.onViewRecycled(holder)
+    }
+
     private inner class OperationHistoryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val operationView = itemView.findViewById<TextView>(R.id.history_view_operation)
 
         val result = itemView.findViewById<TextView>(R.id.history_view_result)
         fun bind(position : Int){
+            if(position == mCursor.count){
+                itemView.requestFocus()
+            }
             //mCursor.
             //var historyCursor  : Cursor = mCursor.moveToPosition(position)
              var operation = mCursor.getString(mCursor.getColumnIndex("action"))
@@ -56,7 +67,7 @@ class HistoryAdapter(context : Context, cursor : Cursor) : RecyclerView.Adapter<
             }
             operationView.text = "$input1 $symbol $input2"
 
-            result.text = mCursor.getString(mCursor.getColumnIndex("result"))
+            result.text = " = "+mCursor.getString(mCursor.getColumnIndex("result"))
 
         }
     }

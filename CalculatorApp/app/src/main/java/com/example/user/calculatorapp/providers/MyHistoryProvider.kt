@@ -21,7 +21,7 @@ class MyHistoryProvider : ContentProvider() {
 
         // parsing the content URI
         val CONTENT_URI = Uri.parse(URL)
-        //        const val id = "id"
+        const val id = "id"
         const val name = "name"
         const val uriCode = 1
         var uriMatcher: UriMatcher? = null
@@ -86,12 +86,12 @@ class MyHistoryProvider : ContentProvider() {
             uri: Uri, projection: Array<String>?, selection: String?,
             selectionArgs: Array<String>?, sortOrder: String?
     ): Cursor? {
-        var sortOrder = sortOrder
+       // var sortOrder = sortOrder
         val qb = SQLiteQueryBuilder()
         qb.tables = TABLE_NAME
         when (uriMatcher!!.match(uri)) {
             uriCode -> {//qb.projectionMap = values
-                println("uricode $uriCode")
+//                println("uricode $uriCode")
                 qb.setProjectionMap(values)}
             else -> throw IllegalArgumentException("Unknown URI $uri")
         }

@@ -134,8 +134,9 @@ class OperationButtonsFragment() : Fragment() {
         values.put("input1",operationResult.input1)
         values.put("input2",operationResult.input2)
         values.put("result",operationResult.answer)
+//        for(value in 1..100)
         activity?.contentResolver?.insert(MyHistoryProvider.CONTENT_URI,values)
-        Toast.makeText(activity,"ADDED IN CONTENT PROVIDER",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(activity,"ADDED IN CONTENT PROVIDER",Toast.LENGTH_SHORT).show()
 
     }
 

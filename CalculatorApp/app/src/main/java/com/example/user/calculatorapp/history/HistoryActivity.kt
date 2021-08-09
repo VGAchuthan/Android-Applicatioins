@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.user.calculatorapp.R
+import com.example.user.calculatorapp.providers.MyHistoryProvider
 import kotlinx.android.synthetic.main.fragment_operations_button.*
 
 /**
@@ -26,18 +27,17 @@ class HistoryActivity : AppCompatActivity() {
     lateinit var historyRecyclerView : RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_history)
-
+        var history = getHistoryFromContentProvider()
         var mActionBar = supportActionBar
-//        val toolbar = findViewById<Toolbar>(R.id.main_activity_toolbar)
-//        setActionBar(toolbar)
-        historyRecyclerView = findViewById<RecyclerView>(R.id.history_recyclerview)
-
         setTitle(R.string.title_histroy)
         mActionBar?.setDisplayHomeAsUpEnabled(true)
+        if(history.count == 0 || history == null ){
+            setContentView(R.layout.layout_no_data_found)
+            return
+        }
+        setContentView(R.layout.activity_history)
 
-
-
+        historyRecyclerView = findViewById<RecyclerView>(R.id.history_recyclerview)
         var params = historyRecyclerView.layoutParams
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -48,27 +48,14 @@ class HistoryActivity : AppCompatActivity() {
 //        getHistoryFromContentProvider()
         historyRecyclerView.adapter = adapter
         historyRecyclerView.addItemDecoration(dividerItemDecoration)
+        historyRecyclerView.scrollToPosition(adapter.itemCount)
        // cursor.close()
 
     }
 
     private fun getHistoryFromContentProvider() : Cursor{
-        cursor = contentResolver.query(Uri.parse("content://com.example.user.calculatorapp/operations"),null, null, null,null)
-        if(cursor == null){
-            Log.e("HISTORY ACTIVITY","CURSOR NULL")
-        }
-        else{
-            if(cursor!!.moveToFirst()){
-                while(!cursor.isAfterLast){
-                    val action = cursor.getString(cursor.getColumnIndex("action"))
-                    val input1 = cursor.getString(cursor.getColumnIndex("input1"))
-                    val input2 = cursor.getString(cursor.getColumnIndex("input2"))
-                    val result = cursor.getString(cursor.getColumnIndex("result"))
-                    println("$action - $input1 - $input2 - $result")
-                    cursor.moveToNext()
-                }
-            }
-        }
+        cursor = contentResolver.query(Uri.parse("content://com.example.user.calculatorapp/operations"),null, null, null,"${MyHistoryProvider.id} DESC")
+
         //var localcursor = cursor
         //cursor.close()
         return cursor
@@ -79,6 +66,9 @@ class HistoryActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_history_activity, menu)
         return true
     }
+    fun onAlertPositiveButtonAction(){
+        clearContentProvider()
+    }
 
 
     override fun onOptionsItemSelected(item: MenuItem?) = when(item?.itemId){
@@ -87,7 +77,9 @@ class HistoryActivity : AppCompatActivity() {
             true
         }
         R.id.menu_action_clear ->{
-            clearContentProvider()
+            val clearanceAlertDialog = HistoryClearanceAlertDialog()
+            clearanceAlertDialog.show(supportFragmentManager,HistoryClearanceAlertDialog.TAG)
+            //clearContentProvider()
             true
         }
         else ->
@@ -98,9 +90,13 @@ class HistoryActivity : AppCompatActivity() {
         cursor.close()
         super.onDestroy()
     }
-    private fun clearContentProvider(){
-        val delete = contentResolver.delete(Uri.parse("content://com.example.user.calculatorapp/operations"),null, null)
-        historyRecyclerView.adapter = null
+     fun clearContentProvider(){
+         if(cursor.count != 0){
+             val delete = contentResolver.delete(Uri.parse("content://com.example.user.calculatorapp/operations"),null, null)
+             historyRecyclerView.adapter = null
+         }
+         finish()
+
 
     }
 }
