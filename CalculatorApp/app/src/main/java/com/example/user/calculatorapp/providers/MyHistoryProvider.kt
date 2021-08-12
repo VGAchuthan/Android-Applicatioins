@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteQueryBuilder
 import android.net.Uri
+import com.example.user.calculatorapp.database.DatabaseHelper
 
 /**
  * Created by User on 06-08-2021.
@@ -18,6 +19,7 @@ class MyHistoryProvider : ContentProvider() {
 
         // defining content URI
         const val URL = "content://$PROVIDER_NAME/operations"
+        const val TABLE_NAME = DatabaseHelper.OPERATION_TABLE_NAME
 
         // parsing the content URI
         val CONTENT_URI = Uri.parse(URL)
@@ -28,19 +30,6 @@ class MyHistoryProvider : ContentProvider() {
         private val values: HashMap<String, String>? = null
 
         // declaring name of the database
-        const val DATABASE_NAME = "CalculatorDB"
-
-        // declaring table name of the database
-        const val TABLE_NAME = "Operations"
-
-        // declaring version of the database
-        const val DATABASE_VERSION = 1
-
-        // sql query to create the table
-        const val CREATE_DB_TABLE =
-                (" CREATE TABLE " + TABLE_NAME
-                        + " (id INTEGER PRIMARY KEY AUTOINCREMENT, action TEXT NOT NULL,input1 TEXT NOT NULL,input2 TEXT NOT NULL,result TEXT NOT NULL);")
-
         init {
 
             // to match the content URI
@@ -86,13 +75,14 @@ class MyHistoryProvider : ContentProvider() {
             uri: Uri, projection: Array<String>?, selection: String?,
             selectionArgs: Array<String>?, sortOrder: String?
     ): Cursor? {
-       // var sortOrder = sortOrder
+        // var sortOrder = sortOrder
         val qb = SQLiteQueryBuilder()
         qb.tables = TABLE_NAME
         when (uriMatcher!!.match(uri)) {
             uriCode -> {//qb.projectionMap = values
 //                println("uricode $uriCode")
-                qb.setProjectionMap(values)}
+                qb.setProjectionMap(values)
+            }
             else -> throw IllegalArgumentException("Unknown URI $uri")
         }
 
@@ -148,28 +138,5 @@ class MyHistoryProvider : ContentProvider() {
     private var db: SQLiteDatabase? = null
 
     // creating a database
-    private class DatabaseHelper  // defining a constructor
-    internal constructor(context: Context?) : SQLiteOpenHelper(
-            context,
-            DATABASE_NAME,
-            null,
-            DATABASE_VERSION
-    ) {
-        // creating a table in the database
-        override fun onCreate(db: SQLiteDatabase) {
-            db.execSQL(CREATE_DB_TABLE)
-        }
 
-        override fun onUpgrade(
-                db: SQLiteDatabase,
-                oldVersion: Int,
-                newVersion: Int
-        ) {
-
-            // sql query to drop a table
-            // having similar name
-            db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
-            onCreate(db)
-        }
-    }
 }

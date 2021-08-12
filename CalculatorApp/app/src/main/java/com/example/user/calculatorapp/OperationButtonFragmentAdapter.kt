@@ -14,9 +14,10 @@ import com.example.user.calculatorapp.enums.OperationType
 /**
  * Created by User on 30-07-2021.
  */
-class OperationButtonFragmentAdapter(context : OperationButtonsFragment, dataSet: Array<Views>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class OperationButtonFragmentAdapter(context : OperationButtonsFragment, dataSet: Array<Views>, functionList : List<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     private val fragmentContext = context
     private val list = dataSet
+    private val _functionList = functionList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -45,13 +46,21 @@ class OperationButtonFragmentAdapter(context : OperationButtonsFragment, dataSet
     }
     private inner class OperationButtonsViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val addButton = itemView.findViewById<Button>(R.id.add_operation_button)
+
         val subButton = itemView.findViewById<Button>(R.id.sub_operation_button)
         val mulButton = itemView.findViewById<Button>(R.id.mul_operation_button)
         val divButton = itemView.findViewById<Button>(R.id.division_operation_button)
 //        val resetButton = itemView.findViewById<Button>(R.id.btn_reset) as Button
+        init {
+            addButton.text = _functionList[0]
+            subButton.text = _functionList[1]
+            mulButton.text = _functionList[2]
+            divButton.text = _functionList[3]
+        }
 
 
         fun bind(position: Int) {
+
             addButton.setOnClickListener {
                 callActivityWith(OperationType.ADD) }
             subButton.setOnClickListener { callActivityWith(OperationType.SUB) }

@@ -74,6 +74,8 @@ class HistoryActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?) = when(item?.itemId){
         android.R.id.home ->{
             this.finish()
+//            overridePend
+
             true
         }
         R.id.menu_action_clear ->{

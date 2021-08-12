@@ -8,12 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.get
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.user.calculatorapp.database.DatabaseHelper
 import com.example.user.calculatorapp.providers.MyHistoryProvider
 
 /**
@@ -37,6 +40,8 @@ class OperationButtonsFragment() : Fragment() {
     private var operationResult : OperationResult? = null
     lateinit var dataSet : Array<Views>
     lateinit var adapter : OperationButtonFragmentAdapter
+    lateinit var dbHelper : DatabaseHelper
+    lateinit var functionList : ArrayList<String>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +57,7 @@ class OperationButtonsFragment() : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //Log.e("FRAG 1", "ON CREATE VIEW")
         //NOTE : receive results from Calculation Fragment
+
         setFragmentResultListener("result"){key, bundle ->
             //result_string = bundle.getString("result_string")
             var input1 = bundle.getString("input1")
@@ -80,11 +86,14 @@ class OperationButtonsFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        dbHelper = DatabaseHelper(activity)
+        fillOperationButtons(view)
+
         recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview1)
 
         //setAdapter()
         dataSet = arrayOf(Views(0),Views(1, true))
-        adapter = OperationButtonFragmentAdapter(this, dataSet)
+        adapter = OperationButtonFragmentAdapter(this, dataSet, functionList.toList())
         //adapter.notifyDataSetChanged()
         recyclerView.adapter = adapter
         resetButton = view.findViewById<Button>(R.id.btn_reset) as Button
@@ -105,6 +114,25 @@ class OperationButtonsFragment() : Fragment() {
             }
             //resetButton.visibility = View.INVISIBLE
     }
+    private fun fillOperationButtons(view : View){
+        println("inside fill operations uttns")
+        functionList = ArrayList()
+        var childCount = 0
+        val db = dbHelper.readableDatabase
+        //val viewGroup = view.findViewById<LinearLayout>(R.id.operation_btn_view)
+        val cursor = db.query(DatabaseHelper.FUNCTIONS_TABLE_NAME,null,null,null,null,null,null)
+        if(cursor.moveToFirst()){
+            while(!cursor.isAfterLast){
+                val action = cursor.getString(cursor.getColumnIndex("action"))
+                println(action)
+                functionList.add(action)
+                cursor.moveToNext()
+            }
+        }
+        cursor.close()
+
+    }
+
 
     private fun setViewVisiblity(viewMode : String){
         when(viewMode){

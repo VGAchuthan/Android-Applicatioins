@@ -21,7 +21,7 @@
             android:background="@drawable/rounded_button"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
-            android:text="Addition" />
+             />
 
         <Button
             android:id="@+id/sub_operation_button"
@@ -33,7 +33,7 @@
             android:background="@drawable/rounded_button"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
-            android:text="Subtraction" />
+             />
 
         <Button
             android:id="@+id/mul_operation_button"
@@ -44,7 +44,7 @@
             android:background="@drawable/rounded_button"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
-            android:text="Multiplication" />
+             />
 
         <Button
             android:id="@+id/division_operation_button"
@@ -55,7 +55,7 @@
             android:background="@drawable/rounded_button"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
-            android:text="Division" />
+             />
 
 
     </LinearLayout>
