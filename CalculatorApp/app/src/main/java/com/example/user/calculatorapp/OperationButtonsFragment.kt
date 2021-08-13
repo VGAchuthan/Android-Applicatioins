@@ -2,6 +2,7 @@ package com.example.user.calculatorapp
 
 import android.content.ContentValues
 import android.content.Context
+import android.os.AsyncTask
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,8 +17,12 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.user.calculatorapp.database.DatabaseHelper
-import com.example.user.calculatorapp.providers.MyHistoryProvider
+//import com.example.user.calculatorapp.database.DatabaseHelper
+import com.example.user.calculatorapp.enums.OperationType
+import com.example.user.calculatorapp.roomdatabase.Functions
+//import com.example.user.calculatorapp.providers.MyHistoryProvider
+import com.example.user.calculatorapp.roomdatabase.History
+import com.example.user.calculatorapp.roomdatabase.HistoryRoomDatabase
 
 /**
  * A simple [Fragment] subclass.
@@ -40,8 +45,7 @@ class OperationButtonsFragment() : Fragment() {
     private var operationResult : OperationResult? = null
     lateinit var dataSet : Array<Views>
     lateinit var adapter : OperationButtonFragmentAdapter
-    lateinit var dbHelper : DatabaseHelper
-    lateinit var functionList : ArrayList<String>
+    private var historyDatabase  = HistoryRoomDatabase
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +69,8 @@ class OperationButtonsFragment() : Fragment() {
             var answer = bundle.getString("answer")
             var action = bundle.getString("action")
             operationResult = OperationResult(action,input1, input2, answer)
-            addToContentProvider(OperationResult(action,input1, input2, answer))
+            addToRoom(History(action=action,input1=input1, input2=input2, result=answer))
+            //addToContentProvider(OperationResult(action,input1, input2, answer))
 
             this.view_mode = ViewModes.VIEW_RESULT
             //    Log.e("FRAGMENT 1","modev: $result_string")
@@ -86,17 +91,18 @@ class OperationButtonsFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dbHelper = DatabaseHelper(activity)
-        fillOperationButtons(view)
+//        dbHelper = DatabaseHelper(activity)
+//        fillOperationButtons(view)
 
         recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview1)
 
         //setAdapter()
         dataSet = arrayOf(Views(0),Views(1, true))
-        adapter = OperationButtonFragmentAdapter(this, dataSet, functionList.toList())
+        val listOfFunctions = getFunctions()
+        adapter = OperationButtonFragmentAdapter(this, dataSet,listOfFunctions!! /*functionList.toList()*/)
         //adapter.notifyDataSetChanged()
         recyclerView.adapter = adapter
-        resetButton = view.findViewById<Button>(R.id.btn_reset) as Button
+        resetButton = view.findViewById<Button>(R.id.btn_reset)
         resetButton.visibility = View.INVISIBLE
 
         recyclerView.layoutManager = LinearLayoutManager(this.context)
@@ -114,25 +120,6 @@ class OperationButtonsFragment() : Fragment() {
             }
             //resetButton.visibility = View.INVISIBLE
     }
-    private fun fillOperationButtons(view : View){
-        println("inside fill operations uttns")
-        functionList = ArrayList()
-        var childCount = 0
-        val db = dbHelper.readableDatabase
-        //val viewGroup = view.findViewById<LinearLayout>(R.id.operation_btn_view)
-        val cursor = db.query(DatabaseHelper.FUNCTIONS_TABLE_NAME,null,null,null,null,null,null)
-        if(cursor.moveToFirst()){
-            while(!cursor.isAfterLast){
-                val action = cursor.getString(cursor.getColumnIndex("action"))
-                println(action)
-                functionList.add(action)
-                cursor.moveToNext()
-            }
-        }
-        cursor.close()
-
-    }
-
 
     private fun setViewVisiblity(viewMode : String){
         when(viewMode){
@@ -156,16 +143,39 @@ class OperationButtonsFragment() : Fragment() {
 
     }
 
-    private fun addToContentProvider(operationResult : OperationResult){
-        val values = ContentValues()
-        values.put("action", operationResult.action)
-        values.put("input1",operationResult.input1)
-        values.put("input2",operationResult.input2)
-        values.put("result",operationResult.answer)
-//        for(value in 1..100)
-        activity?.contentResolver?.insert(MyHistoryProvider.CONTENT_URI,values)
-//        Toast.makeText(activity,"ADDED IN CONTENT PROVIDER",Toast.LENGTH_SHORT).show()
+    private fun getFunctions() : List<Functions>?{
+        return GetFunctions().execute().get()
 
+    }
+    private inner class GetFunctions() : AsyncTask<Unit, Unit, List<Functions>?>(){
+        override fun doInBackground(vararg params: Unit?) : List<Functions>?{
+            var listOfFunction : List<Functions>? = listOf()
+            try{
+                listOfFunction = historyDatabase.getDatabase(activity?.baseContext!!)?.functionDao()?.getAllFunctions()
+            }catch(e:Exception){
+                e.printStackTrace()
+            }
+            return listOfFunction
+        }
+    }
+    private fun addToRoom(history : History){
+        println("ADD TO RROM ")
+        InsertHistory(history).execute()
+
+
+    }
+    private inner class InsertHistory(history: History) : AsyncTask<Unit,Unit,Unit>(){
+        val _history = history
+        override fun doInBackground(vararg params: Unit?) {
+//            for(i in 1..10000)
+            try{
+                val rowId = historyDatabase.getDatabase(activity?.baseContext!!)?.historyDao()?.insertHistory(_history)
+            }catch(e:Exception){
+                e.printStackTrace()
+            }
+
+
+        }
     }
 
 

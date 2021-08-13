@@ -9,14 +9,16 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.user.calculatorapp.R
+import com.example.user.calculatorapp.roomdatabase.History
 import kotlinx.android.synthetic.main.layout_result_view.view.*
 
 /**
  * Created by User on 06-08-2021.
  */
-class HistoryAdapter(context : Context, cursor : Cursor) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class HistoryAdapter(context : Context, history : List<History>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     private val mContext = context
-    private val mCursor = cursor
+    //private val mCursor = cursor
+    private val _history = history
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return OperationHistoryViewHolder(
                 LayoutInflater.from(mContext).inflate(R.layout.layout_operation_history_view, parent, false)
@@ -24,21 +26,14 @@ class HistoryAdapter(context : Context, cursor : Cursor) : RecyclerView.Adapter<
     }
 
     override fun getItemCount(): Int {
-        return mCursor.count
+        return _history.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if(!mCursor.moveToPosition(position)){
-            return
-        }
+
         (holder as OperationHistoryViewHolder).bind(position)
     }
-    fun swapCursor(newCursor: Cursor){
-        if(mCursor != null){
-            mCursor.close()
-        }
-       // mCursor = newCursor
-    }
+
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
 
@@ -51,14 +46,12 @@ class HistoryAdapter(context : Context, cursor : Cursor) : RecyclerView.Adapter<
 
         val result = itemView.findViewById<TextView>(R.id.history_view_result)
         fun bind(position : Int){
-            if(position == mCursor.count){
-                itemView.requestFocus()
-            }
+
             //mCursor.
             //var historyCursor  : Cursor = mCursor.moveToPosition(position)
-             var operation = mCursor.getString(mCursor.getColumnIndex("action"))
-            var input1 =mCursor.getString(mCursor.getColumnIndex("input1"))
-            var input2 = mCursor.getString(mCursor.getColumnIndex("input2"))
+             var operation = _history[position].action//= mCursor.getString(mCursor.getColumnIndex("action"))
+            var input1  = _history[position].input1//=mCursor.getString(mCursor.getColumnIndex("input1"))
+            var input2 =_history[position].input2//= mCursor.getString(mCursor.getColumnIndex("input2"))
             var symbol : Char = when(operation){
                 "ADD" -> { '+' }
                 "SUB" -> { '-' }
@@ -67,7 +60,7 @@ class HistoryAdapter(context : Context, cursor : Cursor) : RecyclerView.Adapter<
             }
             operationView.text = "$input1 $symbol $input2"
 
-            result.text = " = "+mCursor.getString(mCursor.getColumnIndex("result"))
+            result.text = _history[position].result//" = "+mCursor.getString(mCursor.getColumnIndex("result"))
 
         }
     }

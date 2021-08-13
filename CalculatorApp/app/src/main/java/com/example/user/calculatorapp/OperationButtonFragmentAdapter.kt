@@ -10,11 +10,12 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.RecyclerView
 import com.example.user.calculatorapp.enums.OperationType
+import com.example.user.calculatorapp.roomdatabase.Functions
 
 /**
  * Created by User on 30-07-2021.
  */
-class OperationButtonFragmentAdapter(context : OperationButtonsFragment, dataSet: Array<Views>, functionList : List<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class OperationButtonFragmentAdapter(context : OperationButtonsFragment, dataSet: Array<Views> , functionList : List<Functions>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     private val fragmentContext = context
     private val list = dataSet
     private val _functionList = functionList
@@ -52,10 +53,10 @@ class OperationButtonFragmentAdapter(context : OperationButtonsFragment, dataSet
         val divButton = itemView.findViewById<Button>(R.id.division_operation_button)
 //        val resetButton = itemView.findViewById<Button>(R.id.btn_reset) as Button
         init {
-            addButton.text = _functionList[0]
-            subButton.text = _functionList[1]
-            mulButton.text = _functionList[2]
-            divButton.text = _functionList[3]
+            addButton.text = _functionList[0].action
+            subButton.text = _functionList[1].action
+            mulButton.text = _functionList[2].action
+            divButton.text = _functionList[3].action
         }
 
 
