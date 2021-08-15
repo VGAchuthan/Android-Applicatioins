@@ -22,7 +22,7 @@
         android:layout_marginTop="25dp"
         android:background="@drawable/rounded_button"
 
-        android:text="Reset" />
+        android:text="@string/text_reset" />
 
 
 

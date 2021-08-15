@@ -62,7 +62,7 @@
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
             android:padding="8dp"
-            android:text="Perform" />
+            />
 
 
     </LinearLayout>

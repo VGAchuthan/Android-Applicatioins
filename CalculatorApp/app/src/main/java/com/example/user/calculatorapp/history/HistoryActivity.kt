@@ -1,5 +1,6 @@
 package com.example.user.calculatorapp.history
 
+import android.app.ProgressDialog
 import android.content.res.Configuration
 import android.database.Cursor
 import android.database.SQLException
@@ -27,33 +28,50 @@ class HistoryActivity : AppCompatActivity() {
 //    lateinit var cursor : Cursor
     private var history : List<History>? = null
     lateinit var historyRecyclerView : RecyclerView
+    private var current_view = HISTORY_VIEW
+    companion object {
+        const val HISTORY_VIEW = "history_view"
+        const val NO_HISTORY_VIEW = "no_history_data"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        setContentView(R.layout.layout_no_data_found)
 
         getHistoryFromRooom()
+        if(history?.size != 0)
+            current_view = HISTORY_VIEW
+        else
+            current_view = NO_HISTORY_VIEW
+        setScreenLayout()
         var mActionBar = supportActionBar
         setTitle(R.string.title_histroy)
         mActionBar?.setDisplayHomeAsUpEnabled(true)
-        if(history?.size == 0 || history == null ){
+
+    }
+    private fun setScreenLayout(){
+        if(current_view.equals(NO_HISTORY_VIEW)){
             setContentView(R.layout.layout_no_data_found)
             return
         }
-        setContentView(R.layout.activity_history)
+        else{
+            setContentView(R.layout.activity_history)
+            historyRecyclerView = findViewById<RecyclerView>(R.id.history_recyclerview)
+            var params = historyRecyclerView.layoutParams
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            historyRecyclerView.layoutManager = LinearLayoutManager(this)
+            historyRecyclerView.layoutParams = params
+            var dividerItemDecoration = DividerItemDecoration(historyRecyclerView.context, Configuration.ORIENTATION_PORTRAIT)
 
-        historyRecyclerView = findViewById<RecyclerView>(R.id.history_recyclerview)
-        var params = historyRecyclerView.layoutParams
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        historyRecyclerView.layoutManager = LinearLayoutManager(this)
-        historyRecyclerView.layoutParams = params
-        var dividerItemDecoration = DividerItemDecoration(historyRecyclerView.context, Configuration.ORIENTATION_PORTRAIT)
+            var adapter = HistoryAdapter(this,history!!)
 
-        var adapter = HistoryAdapter(this,history!!)
+            historyRecyclerView.adapter = adapter
+            historyRecyclerView.addItemDecoration(dividerItemDecoration)
+            historyRecyclerView.scrollToPosition(adapter.itemCount)
+            // cursor.close()
 
-        historyRecyclerView.adapter = adapter
-        historyRecyclerView.addItemDecoration(dividerItemDecoration)
-        historyRecyclerView.scrollToPosition(adapter.itemCount)
-       // cursor.close()
+        }
+
 
     }
 
@@ -93,6 +111,12 @@ class HistoryActivity : AppCompatActivity() {
 
     }
     private inner class GetAllHistory : AsyncTask<Unit,Unit,List<History>?>(){
+        val dialog : ProgressDialog = ProgressDialog(this@HistoryActivity)
+        override fun onPreExecute() {
+            super.onPreExecute()
+            dialog.setMessage("Processing....")
+            dialog.show()
+        }
         override fun doInBackground(vararg params: Unit?) : List<History>? {
             val historyRoomDatabase = HistoryRoomDatabase
             var c_history :List<History>? = listOf()
@@ -105,12 +129,20 @@ class HistoryActivity : AppCompatActivity() {
 
             return c_history
         }
+
+        override fun onPostExecute(result: List<History>?) {
+            super.onPostExecute(result)
+            dialog.dismiss()
+        }
     }
      private fun clearContentProvider(){
          if(history?.size != 0){
              ClearHistory().execute()
          }
-         finish()
+         current_view = NO_HISTORY_VIEW
+         setScreenLayout()
+         //finish()
+
 
 
     }

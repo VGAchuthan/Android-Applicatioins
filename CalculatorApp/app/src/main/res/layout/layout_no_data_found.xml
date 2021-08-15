@@ -7,6 +7,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textSize="22sp"
-        android:hint="No History"/>
+        android:hint="@string/text_no_history"/>
 
 </RelativeLayout>
