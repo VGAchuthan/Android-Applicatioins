@@ -1,24 +1,23 @@
 package com.example.user.calculatorapp
 
-import android.content.ContentValues
+
 import android.content.Context
-import android.os.AsyncTask
+
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.core.view.get
+
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 //import com.example.user.calculatorapp.database.DatabaseHelper
-import com.example.user.calculatorapp.enums.OperationType
+//import com.example.user.calculatorapp.enums.OperationType
 import com.example.user.calculatorapp.roomdatabase.Functions
 //import com.example.user.calculatorapp.providers.MyHistoryProvider
 import com.example.user.calculatorapp.roomdatabase.History
@@ -46,6 +45,7 @@ class OperationButtonsFragment() : Fragment() {
     lateinit var dataSet : Array<Views>
     lateinit var adapter : OperationButtonFragmentAdapter
     private var historyDatabase  = HistoryRoomDatabase
+    lateinit private var dbOperationsHelper : DBOperationsHelper
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +61,7 @@ class OperationButtonsFragment() : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //Log.e("FRAG 1", "ON CREATE VIEW")
         //NOTE : receive results from Calculation Fragment
+
 
         setFragmentResultListener("result"){key, bundle ->
             //result_string = bundle.getString("result_string")
@@ -93,6 +94,7 @@ class OperationButtonsFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 //        dbHelper = DatabaseHelper(activity)
 //        fillOperationButtons(view)
+        dbOperationsHelper = DBOperations(activity?.applicationContext!!)
 
         recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview1)
 
@@ -144,39 +146,23 @@ class OperationButtonsFragment() : Fragment() {
     }
 
     private fun getFunctions() : List<Functions>?{
-        return GetFunctions().execute().get()
+        return dbOperationsHelper.getFunctions()
 
     }
-    private inner class GetFunctions() : AsyncTask<Unit, Unit, List<Functions>?>(){
-        override fun doInBackground(vararg params: Unit?) : List<Functions>?{
-            var listOfFunction : List<Functions>? = listOf()
-            try{
-                listOfFunction = historyDatabase.getDatabase(activity?.baseContext!!)?.functionDao()?.getAllFunctions()
-            }catch(e:Exception){
-                e.printStackTrace()
-            }
-            return listOfFunction
-        }
-    }
+
     private fun addToRoom(history : History){
         println("ADD TO RROM ")
-        InsertHistory(history).execute()
 
-
-    }
-    private inner class InsertHistory(history: History) : AsyncTask<Unit,Unit,Unit>(){
-        val _history = history
-        override fun doInBackground(vararg params: Unit?) {
-//            for(i in 1..10000)
-            try{
-                val rowId = historyDatabase.getDatabase(activity?.baseContext!!)?.historyDao()?.insertHistory(_history)
-            }catch(e:Exception){
-                e.printStackTrace()
-            }
-
-
+        if(dbOperationsHelper.insertHistory(history) != -1.toLong()){
+            Log.e("Fragment : OperationButtonFragment","Data Added to History")
         }
+        else
+            Log.e("Fragment : OperationButtonFragment","Data Not Added to History")
+
+
+
     }
+
 
 
     // TODO: Rename method, update argument and hook method into UI event

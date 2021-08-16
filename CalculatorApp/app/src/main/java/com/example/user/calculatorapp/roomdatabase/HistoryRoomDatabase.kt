@@ -3,6 +3,7 @@ package com.example.user.calculatorapp.roomdatabase
 import android.content.Context
 import android.database.SQLException
 import android.os.AsyncTask
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -35,6 +36,7 @@ abstract class HistoryRoomDatabase : RoomDatabase(){
                             super.onCreate(db)
                             val listOfFunctions = DefaultFunctions.getFunctionList()
                             Executors.newSingleThreadExecutor().execute{
+
                                 INSTANCE?.let {
                                     for(function in listOfFunctions){
                                         try{

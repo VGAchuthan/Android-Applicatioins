@@ -1,10 +1,8 @@
 package com.example.user.calculatorapp.history
 
-import android.app.ProgressDialog
+
 import android.content.res.Configuration
-import android.database.Cursor
-import android.database.SQLException
-import android.os.AsyncTask
+
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -14,11 +12,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.user.calculatorapp.DBOperations
+import com.example.user.calculatorapp.DBOperationsHelper
 
 import com.example.user.calculatorapp.R
 import com.example.user.calculatorapp.roomdatabase.History
 
-import com.example.user.calculatorapp.roomdatabase.HistoryRoomDatabase
 
 
 /**
@@ -29,6 +28,7 @@ class HistoryActivity : AppCompatActivity() {
     private var history : List<History>? = null
     lateinit var historyRecyclerView : RecyclerView
     private var current_view = HISTORY_VIEW
+    lateinit private var dbOperations: DBOperationsHelper
     companion object {
         const val HISTORY_VIEW = "history_view"
         const val NO_HISTORY_VIEW = "no_history_data"
@@ -37,8 +37,9 @@ class HistoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        setContentView(R.layout.layout_no_data_found)
+        dbOperations = DBOperations(this.applicationContext)
 
-        getHistoryFromRooom()
+        history = getHistoryFromRooom()
         if(history?.size != 0)
             current_view = HISTORY_VIEW
         else
@@ -106,38 +107,15 @@ class HistoryActivity : AppCompatActivity() {
 //        cursor.close()
         super.onDestroy()
     }
-    private fun getHistoryFromRooom(){
-        history = GetAllHistory().execute().get()
+    private fun getHistoryFromRooom() : List<History>?{
+        return dbOperations.getAllHistory()
 
     }
-    private inner class GetAllHistory : AsyncTask<Unit,Unit,List<History>?>(){
-        val dialog : ProgressDialog = ProgressDialog(this@HistoryActivity)
-        override fun onPreExecute() {
-            super.onPreExecute()
-            dialog.setMessage("Processing....")
-            dialog.show()
-        }
-        override fun doInBackground(vararg params: Unit?) : List<History>? {
-            val historyRoomDatabase = HistoryRoomDatabase
-            var c_history :List<History>? = listOf()
-            try{
-                c_history = historyRoomDatabase.getDatabase(baseContext)?.historyDao()?.getAllHistory()
-            }catch(e:Exception){
-                e.printStackTrace()
-            }
 
-
-            return c_history
-        }
-
-        override fun onPostExecute(result: List<History>?) {
-            super.onPostExecute(result)
-            dialog.dismiss()
-        }
-    }
      private fun clearContentProvider(){
          if(history?.size != 0){
-             ClearHistory().execute()
+             val rows = dbOperations.clearHistory()
+             Log.e("ACTIVITY HISTORY"," ${rows} : ROWS AFFECTED")
          }
          current_view = NO_HISTORY_VIEW
          setScreenLayout()
@@ -146,19 +124,5 @@ class HistoryActivity : AppCompatActivity() {
 
 
     }
-    private inner class ClearHistory : AsyncTask<Unit, Unit, Unit>(){
-        override fun doInBackground(vararg params: Unit?) {
-            val historyRoomDatabase = HistoryRoomDatabase
-            try{
-                val rowId = historyRoomDatabase.getDatabase(baseContext)?.historyDao()?.also {
-                    it.clearHistory()
-                    it.resetHistoryTable()
-                }
-            }catch (e :SQLException){
-                e.printStackTrace()
-            }
 
-        }
-
-    }
 }
