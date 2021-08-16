@@ -100,11 +100,6 @@ class ActivityA : FragmentActivity() {
 
     override fun onStart() {
         super.onStart()
-        Log.e("ACTIVITY LIFECYCLE","ON START")
-    }
-
-    override fun onResume() {
-        super.onResume()
         left_fragment = findViewById(R.id.left_fragment)
         orientation = resources.configuration.orientation
 
@@ -130,6 +125,12 @@ class ActivityA : FragmentActivity() {
             setFragmentsForLandscapeMode()
             viewVisiblity()
         }
+
+        Log.e("ACTIVITY LIFECYCLE","ON START")
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         Log.e("ACTIVITY LIFECYCLE","ON RESUME")
     }

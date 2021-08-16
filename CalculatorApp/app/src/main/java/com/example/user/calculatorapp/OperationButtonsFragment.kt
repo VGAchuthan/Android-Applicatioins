@@ -22,6 +22,7 @@ import com.example.user.calculatorapp.roomdatabase.Functions
 //import com.example.user.calculatorapp.providers.MyHistoryProvider
 import com.example.user.calculatorapp.roomdatabase.History
 import com.example.user.calculatorapp.roomdatabase.HistoryRoomDatabase
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -70,7 +71,8 @@ class OperationButtonsFragment() : Fragment() {
             var answer = bundle.getString("answer")
             var action = bundle.getString("action")
             operationResult = OperationResult(action,input1, input2, answer)
-            addToRoom(History(action=action,input1=input1, input2=input2, result=answer))
+            System.currentTimeMillis().toInt()
+            addToRoom(History(action=action,input1=input1, input2=input2, result=answer, date = System.currentTimeMillis()))
             //addToContentProvider(OperationResult(action,input1, input2, answer))
 
             this.view_mode = ViewModes.VIEW_RESULT
@@ -94,7 +96,7 @@ class OperationButtonsFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 //        dbHelper = DatabaseHelper(activity)
 //        fillOperationButtons(view)
-        dbOperationsHelper = DBOperations(activity?.applicationContext!!)
+        dbOperationsHelper = DBOperations(activity?.baseContext!!)
 
         recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview1)
 

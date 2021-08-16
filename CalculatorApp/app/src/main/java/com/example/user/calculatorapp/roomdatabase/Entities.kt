@@ -19,7 +19,10 @@ data class History(
         @ColumnInfo(name="input2")
         val input2:String,
         @ColumnInfo(name="result")
-        val result:String
+        val result:String,
+        @ColumnInfo(name="date")
+        val date: Long
+
 )
 
 @Entity(tableName = "${HistoryRoomDatabase.FUNCTIONS_TABLE}")

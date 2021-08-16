@@ -37,7 +37,7 @@ class HistoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        setContentView(R.layout.layout_no_data_found)
-        dbOperations = DBOperations(this.applicationContext)
+        dbOperations = DBOperations(this.baseContext)
 
         history = getHistoryFromRooom()
         if(history?.size != 0)
